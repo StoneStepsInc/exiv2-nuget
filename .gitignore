@@ -1,0 +1,23 @@
+# Visual Studio files
+/.vs/
+
+# downloaded zLib package file
+/exiv2-*.tar.gz
+
+# extracted exiv2 source
+/exiv2-*/
+
+# collected exiv2 build artifacts
+/nuget/build/native/include/
+/nuget/build/native/lib/
+/nuget/licenses/
+
+# locally-built Nuget package
+/StoneSteps.exiv2.Static.*.nupkg
+
+# sample app for testing the Nuget package
+/sample-exiv2/.vs/
+/sample-exiv2/sample-exiv2.vcxproj.user
+/sample-exiv2/packages/
+/sample-exiv2/packages.config
+/sample-exiv2/x64/

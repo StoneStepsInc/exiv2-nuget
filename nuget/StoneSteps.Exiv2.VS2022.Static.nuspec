@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>StoneSteps.Exiv2.VS2022.Static</id>
+    <version>0.27.5</version>
+    <authors>Exiv2 authors</authors>
+    <owners>Stone Steps (package)</owners>
+    <license type="file">licenses\COPYING</license>
+    <projectUrl>https://github.com/Exiv2/exiv2</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Exiv2 is a C++ library to read, write, delete and modify EXIF image metadata.</description>
+    <releaseNotes>
+Package Notes:
+
+  * Static libraries for Debug/Release configurations, x64 platform
+  * Built in Visual C++ 2022, against Debug/Release MT/DLL MSVC CRT
+  * All 3rd-party dependencies have been disabled, which means that
+    only base EXIF information will be available.
+  * Exiv2 source code v0.27.5 has been modified to compile in C++17.
+  * See README.md for more details.
+
+See libexif release notes for details:
+
+https://github.com/Exiv2/exiv2/releases/tag/v0.27.5
+    </releaseNotes>
+    <copyright>Copyright (C) 2004-2022 Exiv2 authors</copyright>
+    <tags>exiv2,native,library</tags>
+  </metadata>
+  <files>
+   <file src="README.txt" target=""/>
+   <file src="licenses\COPYING" target="licenses\COPYING"/>
+   <file src="build\**\*" target="build"/>
+  </files>
+</package>

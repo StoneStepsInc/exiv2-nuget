@@ -1,0 +1,164 @@
+#
+# The version part is immutable in the name, but the package revision
+# component after the dash should be kept in sync with `PKG_REV`.
+# GitHub doesn't allow variables in the workflow names, so this cannot
+# be automated.
+#
+# For new exiv2 versions, rename this file with a new version name
+# to restart build numbers from `1`. This is necessary because GitHub
+# maintains build numbers per workflow file name.
+#
+name: exiv2 v0.27.5-1
+
+#
+# When `publish-package` is set to `yes`, the workflow will build
+# the package and publish it to nuget.org. Otherwise, a package
+# will be built as an artifact and may be downloaded via GitHub UI.
+#
+# Published Nuget package will use the 4th version component as a
+# package revision number because Nuget lacks package revision
+# support.
+#
+# Without publishing, a Nuget package will be uploaded as an artifact
+# of the workflow run and will be named using a pre-release version,
+# which is an unfortunate workaround for a lack of build promotion
+# support between GitHub and Nuget. This means that true pre-release
+# packages will conflict with CI packages, but for this repository
+# this is not an issue that will ever need to be addressed.
+#
+on:
+  workflow_dispatch:
+    inputs:
+      publish-package:
+        description: Publish Nuget Package?
+        required: false
+
+#
+# For each new exiv2 release, change these variables:
+#
+#   * PKG_VER
+#   * EXIV2_FNAME
+#   * EXIV2_DNAME
+#   * EXIV2_SHA256
+#
+# Check that the directory name within the downloaded source archive
+# matches the name referenced in `EXIV2_DNAME`.
+#
+# For each change in `PKG_VER`, `PKG_REV` must be reset to `1` (one).
+#
+# Package revision should be incremented by one every time package
+# content is changed in any way, such as changing compiler options,
+# adding or removing files, changing any text in README files, etc.
+#
+env:
+  PKG_VER: 0.27.5
+  PKG_REV: 1
+  BUILD_NUMBER: ${{ github.run_number }}
+
+  #
+  # GitHub won't allow referencing `env` within this section, which
+  # means that in order to reference the exiv2 source directory we
+  # need to concatenate variables in-place (e.g. `exiv2-${{ env.PKG_VER }}`)
+  # or to define them in each step where the source directory is
+  # referenced, which is what's done in this pipeline (`EXIV2_DNAME`).
+  #
+  EXIV2_FNAME: exiv2-0.27.5-Source.tar.gz
+  EXIV2_DNAME: exiv2-0.27.5-Source
+  EXIV2_SHA256: 35a58618ab236a901ca4928b0ad8b31007ebdc0386d904409d825024e45ea6e2
+
+  # for VS Community Edition, replace `Enterprise` with `Community` in the path
+  VCVARSALL: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall'
+
+  # Nuget Gallery (www.nuget.org) publish URL
+  NUGET_PUB_URL: https://api.nuget.org/v3/index.json
+
+defaults:
+  run:
+    shell: cmd
+
+jobs:
+  make-exiv2:
+    name: Make exiv2
+    runs-on: windows-2022
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Download exiv2
+      run: curl --location --output ${{ env.EXIV2_FNAME }} https://github.com/Exiv2/exiv2/releases/download/v${{ env.PKG_VER }}/${{ env.EXIV2_FNAME }}
+    
+    - name: Verify exiv2 checksum
+      run: 7z h -scrcSHA256 ${{ env.EXIV2_FNAME }} | findstr /C:"SHA256 for data" | call devops\check-sha256 "${{ env.EXIV2_SHA256 }}"
+
+    - name: Extract exiv2
+      run: |
+        tar xzf ${{ env.EXIV2_FNAME }}
+
+    - name: Patch source
+      working-directory: ${{ env.EXIV2_DNAME }}
+      run: |
+        patch -p1 --unified --input ..\patches\cmake.patch
+        patch -p1 --unified --input ..\patches\auto-ptr.patch
+
+    - name: Generate projects
+      working-directory: ${{ env.EXIV2_DNAME }}
+      run: |
+        call "${{ env.VCVARSALL }}" x64
+        cmake -S . -B build -G "Visual Studio 17 2022" -A x64
+
+    - name: Build x64/Debug
+      working-directory: ${{ env.EXIV2_DNAME }}
+      run: |
+        call "${{ env.VCVARSALL }}" x64
+        cmake --build build --config Debug
+
+    - name: Build x64/Release
+      working-directory: ${{ env.EXIV2_DNAME }}
+      run: |
+        call "${{ env.VCVARSALL }}" x64
+        cmake --build build --config Release
+
+    - name: Collect artifacts
+      working-directory: ${{ env.EXIV2_DNAME }}
+      run: |
+        mkdir ..\nuget\licenses
+        copy COPYING ..\nuget\licenses\
+
+        mkdir ..\nuget\build\native\lib\x64\Debug
+        xcopy /Y build\lib\Debug\* ..\nuget\build\native\lib\x64\Debug\
+
+        mkdir ..\nuget\build\native\lib\x64\Release
+        xcopy /Y build\lib\Release\* ..\nuget\build\native\lib\x64\Release\
+
+        mkdir ..\nuget\build\native\include\exiv2
+        xcopy /Y /S include\exiv2\* ..\nuget\build\native\include\exiv2\
+        copy /Y build\exv_conf.h ..\nuget\build\native\include\exiv2\
+        copy /Y build\exiv2lib_export.h ..\nuget\build\native\include\exiv2\
+
+      # this is an unconventional use of the pre-release version - see README.md
+    - name: Make CI Nuget package
+      if: ${{ github.event.inputs.publish-package != 'yes' }}
+      run: |
+        nuget pack nuget\StoneSteps.Exiv2.Static.nuspec -Suffix "ci.%BUILD_NUMBER%" -Version ${{ env.PKG_VER }}.${{ env.PKG_REV }}
+
+    - name: Upload CI Nuget package
+      if: ${{ github.event.inputs.publish-package != 'yes' }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: exiv2 CI Nuget package
+        path: StoneSteps.Exiv2.VS2022.Static.${{ env.PKG_VER }}.${{ env.PKG_REV }}-ci.${{ env.BUILD_NUMBER }}.nupkg
+
+      #
+      # Use `-Version` explicitly to override the version in the manifest,
+      # so we can usurp the 4th version component for the package revision.
+      #
+    - name: Make Nuget package
+      if: ${{ github.event.inputs.publish-package == 'yes' }}
+      run: |
+        nuget pack nuget\StoneSteps.Exiv2.Static.nuspec -Version ${{ env.PKG_VER }}.${{ env.PKG_REV }}
+
+    - name: Publish Nuget package
+      if: ${{ github.event.inputs.publish-package == 'yes' }}
+      run: |
+        nuget push StoneSteps.Exiv2.VS2022.Static.${{ env.PKG_VER }}.${{ env.PKG_REV }}.nupkg -Source ${{ env.NUGET_PUB_URL }} -ApiKey "${{ secrets.NUGET_API_KEY }}" -NonInteractive

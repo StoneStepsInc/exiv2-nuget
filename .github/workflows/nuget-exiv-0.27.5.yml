@@ -30,7 +30,7 @@ on:
   workflow_dispatch:
     inputs:
       publish-package:
-        description: Publish Nuget Package?
+        description: Publish Nuget Package (yes/no)?
         required: false
 
 #
@@ -83,7 +83,7 @@ jobs:
     
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Download exiv2
       run: curl --location --output ${{ env.EXIV2_FNAME }} https://github.com/Exiv2/exiv2/releases/download/v${{ env.PKG_VER }}/${{ env.EXIV2_FNAME }}

@@ -24,7 +24,7 @@ See libexif release notes for details:
 https://github.com/Exiv2/exiv2/releases/tag/v0.27.5
     </releaseNotes>
     <copyright>Copyright (C) 2004-2022 Exiv2 authors</copyright>
-    <tags>exiv2,native,library</tags>
+    <tags>Exiv2,EXIF,native,library</tags>
   </metadata>
   <files>
    <file src="README.txt" target=""/>

@@ -119,6 +119,7 @@ jobs:
         call "${{ env.VCVARSALL }}" x64
         cmake --build build --config Release
 
+      # do not fish out PDBs outside build\ (e.g. build\src\exiv2lib_int.dir\Debug\exiv2lib_int.pdb)
     - name: Collect artifacts
       working-directory: ${{ env.EXIV2_DNAME }}
       run: |

@@ -58,6 +58,7 @@ copy COPYING ..\nuget\licenses\
 
 mkdir ..\nuget\build\native\lib\x64\Debug
 xcopy /Y build\lib\Debug\* ..\nuget\build\native\lib\x64\Debug\
+rem do not fish out PDBs outside build\ (e.g. build\src\exiv2lib_int.dir\Debug\exiv2lib_int.pdb)
 
 mkdir ..\nuget\build\native\lib\x64\Release
 xcopy /Y build\lib\Release\* ..\nuget\build\native\lib\x64\Release\

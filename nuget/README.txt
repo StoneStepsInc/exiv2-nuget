@@ -1,6 +1,6 @@
 This package contains a static Exiv2 library and header files
 for the x64 platform and Debug/Release configurations built with
-Visual C++ 2022.
+Visual C++ 2022, against Debug/Release MT/DLL MSVC CRT.
 
 The Exiv2 static library appropriate for the platform and
 configuration selected in a Visual Studio solution is explicitly
@@ -15,9 +15,9 @@ not work for any other configuration names. Do not install this
 package for projects with configurations other than Debug and
 Release.
 
-Exiv2 library calls functions in these Windows libraries, which
-need to be added as linker input to the Visual Studio project,
-in order to link against the library.
+The Exiv2 library calls functions in these Windows libraries,
+which need to be added as linker input to the Visual Studio
+project using this package.
 
  * psapi.lib
  * ws2_32.lib

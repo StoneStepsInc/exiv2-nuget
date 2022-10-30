@@ -86,7 +86,7 @@ needs to be changed in all of them for a new version of Exiv2.
   * devops/make-package.bat (`PKG_VER`, `PKG_REV`, `EXIV2_FNAME`,
     `EXIV2_DNAME`, `EXIV2_SHA256`)
   * .github/workflows/build-nuget-package.yml (`name`, `PKG_VER`,
-    `PKG_REV`, `EXIV2_FNAME`, `EXIV2_FNAME`, `EXIV2_SHA256`)
+    `PKG_REV`, `EXIV2_FNAME`, `EXIV2_DNAME`, `EXIV2_SHA256`)
 
 `EXIV2_SHA256` ia a SHA-256 checksum of the Exiv2 package file and
 needs to be changed when a new version of Exiv2 is released.
@@ -128,7 +128,7 @@ some unknowns into the final package (e.g. build VM was updated).
 ## Building Package Locally
 
 You can build a Nuget package locally with `make-package.bat`
-located in `devops`. This script expects VS2019 Community Edition
+located in `devops`. This script expects VS2022 Community Edition
 installed in the default location. If you have other edition of
 Visual Studio, edit the file to use the correct path to the
 `vcvarsall.bat` file.
@@ -149,7 +149,7 @@ In order to build `sample-exiv2.exe`, open Nuget Package manager
 in the solution and install either the locally-built Nuget package
 or the one from [nuget.org][].
 
-Binaries linking against this packagge need to include these Win32
+Binaries linking against this package need to include these Win32
 libraries as linker input, similar to how this sample project does
 it. This is because of some functionality in Exiv2 that cannot be
 conditionally compiled, such as the `Exiv2::http` function.

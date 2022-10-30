@@ -140,7 +140,7 @@ jobs:
     - name: Make CI Nuget package
       if: ${{ github.event.inputs.publish-package != 'yes' }}
       run: |
-        nuget pack nuget\StoneSteps.Exiv2.Static.nuspec -Suffix "ci.%BUILD_NUMBER%" -Version ${{ env.PKG_VER }}.${{ env.PKG_REV }}
+        nuget pack nuget\StoneSteps.Exiv2.VS2022.Static.nuspec -Suffix "ci.%BUILD_NUMBER%" -Version ${{ env.PKG_VER }}.${{ env.PKG_REV }}
 
     - name: Upload CI Nuget package
       if: ${{ github.event.inputs.publish-package != 'yes' }}
@@ -156,7 +156,7 @@ jobs:
     - name: Make Nuget package
       if: ${{ github.event.inputs.publish-package == 'yes' }}
       run: |
-        nuget pack nuget\StoneSteps.Exiv2.Static.nuspec -Version ${{ env.PKG_VER }}.${{ env.PKG_REV }}
+        nuget pack nuget\StoneSteps.Exiv2.VS2022.Static.nuspec -Version ${{ env.PKG_VER }}.${{ env.PKG_REV }}
 
     - name: Publish Nuget package
       if: ${{ github.event.inputs.publish-package == 'yes' }}

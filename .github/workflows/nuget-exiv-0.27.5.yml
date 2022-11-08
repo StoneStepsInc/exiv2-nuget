@@ -4,11 +4,11 @@
 # GitHub doesn't allow variables in the workflow names, so this cannot
 # be automated.
 #
-# For new exiv2 versions, rename this file with a new version name
+# For new Exiv2 versions, rename this file with a new version name
 # to restart build numbers from `1`. This is necessary because GitHub
 # maintains build numbers per workflow file name.
 #
-name: exiv2 v0.27.5-1
+name: exiv2 v0.27.5-2
 
 #
 # When `publish-package` is set to `yes`, the workflow will build
@@ -34,7 +34,7 @@ on:
         required: false
 
 #
-# For each new exiv2 release, change these variables:
+# For each new Exiv2 release, change these variables:
 #
 #   * PKG_VER
 #   * EXIV2_FNAME
@@ -52,7 +52,7 @@ on:
 #
 env:
   PKG_VER: 0.27.5
-  PKG_REV: 1
+  PKG_REV: 2
   BUILD_NUMBER: ${{ github.run_number }}
 
   #
@@ -78,20 +78,20 @@ defaults:
 
 jobs:
   make-exiv2:
-    name: Make exiv2
+    name: Make Exiv2
     runs-on: windows-2022
     
     steps:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Download exiv2
+    - name: Download Exiv2
       run: curl --location --output ${{ env.EXIV2_FNAME }} https://github.com/Exiv2/exiv2/releases/download/v${{ env.PKG_VER }}/${{ env.EXIV2_FNAME }}
     
-    - name: Verify exiv2 checksum
+    - name: Verify Exiv2 checksum
       run: 7z h -scrcSHA256 ${{ env.EXIV2_FNAME }} | findstr /C:"SHA256 for data" | call devops\check-sha256 "${{ env.EXIV2_SHA256 }}"
 
-    - name: Extract exiv2
+    - name: Extract Exiv2
       run: |
         tar xzf ${{ env.EXIV2_FNAME }}
 
@@ -171,7 +171,7 @@ jobs:
       if: ${{ github.event.inputs.publish-package != 'yes' }}
       uses: actions/upload-artifact@v3
       with:
-        name: exiv2 CI Nuget package
+        name: Exiv2 CI Nuget package
         path: StoneSteps.Exiv2.VS2022.Static.${{ env.PKG_VER }}.${{ env.PKG_REV }}-ci.${{ env.BUILD_NUMBER }}.nupkg
 
       #

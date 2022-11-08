@@ -1,5 +1,5 @@
---- "a/build/src/exiv2lib.vcxproj"	2022-11-06 18:09:33.260623900 -0500
-+++ "b/build/src/exiv2lib.vcxproj"	2022-11-06 18:04:38.243590500 -0500
+--- a/build/src/exiv2lib.vcxproj	2022-11-06 18:09:33.260623900 -0500
++++ b/build/src/exiv2lib.vcxproj	2022-11-06 18:04:38.243590500 -0500
 @@ -1,5 +1,7 @@
  ﻿<?xml version="1.0" encoding="utf-8"?>
  <Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">

@@ -122,7 +122,6 @@ jobs:
     - name: Patch CMake/VS projects
       working-directory: ${{ env.EXIV2_DNAME }}
       run: |
-        dir /s /b build
         patch -p1 --unified --input ..\patches\20-vs-nuget-exiv2lib.patch
         patch -p1 --unified --input ..\patches\21-vs-nuget-exiv2lib_int.patch
         patch -p1 --unified --input ..\patches\22-vs-nuget-exiv2-xmp.patch

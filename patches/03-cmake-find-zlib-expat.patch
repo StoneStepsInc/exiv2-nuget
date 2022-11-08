@@ -1,0 +1,87 @@
+diff --recursive --unified a/cmake/findDependencies.cmake b/cmake/findDependencies.cmake
+--- a/cmake/findDependencies.cmake	2021-10-21 13:01:10.000000000 -0400
++++ b/cmake/findDependencies.cmake	2022-11-05 22:04:14.715395600 -0400
+@@ -16,7 +16,7 @@
+ find_package(Threads REQUIRED)
+ 
+ if( EXIV2_ENABLE_PNG )
+-    find_package( ZLIB REQUIRED )
++    #find_package( ZLIB REQUIRED )
+ endif( )
+ 
+ if( EXIV2_ENABLE_WEBREADY )
+@@ -42,7 +42,7 @@
+     message(FATAL_ERROR "EXIV2_ENABLE_XMP AND EXIV2_ENABLE_EXTERNAL_XMP are mutually exclusive.  You can only choose one of them")
+ else()
+     if (EXIV2_ENABLE_XMP)
+-        find_package(EXPAT REQUIRED)
++        #find_package(EXPAT REQUIRED)
+     elseif (EXIV2_ENABLE_EXTERNAL_XMP)
+         find_package(XmpSdk REQUIRED)
+     endif ()
+diff --recursive --unified a/cmake/generateConfigFile.cmake b/cmake/generateConfigFile.cmake
+--- a/cmake/generateConfigFile.cmake	2021-10-21 13:01:10.000000000 -0400
++++ b/cmake/generateConfigFile.cmake	2022-11-05 21:56:20.083895300 -0400
+@@ -22,7 +22,7 @@
+     set(EXV_HAVE_XMP_TOOLKIT OFF)
+ endif()
+ set(EXV_HAVE_ICONV       ${ICONV_FOUND})
+-set(EXV_HAVE_LIBZ        ${ZLIB_FOUND})
++set(EXV_HAVE_LIBZ        TRUE)
+ set(EXV_UNICODE_PATH     ${EXIV2_ENABLE_WIN_UNICODE})
+ 
+ check_cxx_symbol_exists(gmtime_r    time.h         EXV_HAVE_GMTIME_R)
+diff --recursive --unified a/src/CMakeLists.txt b/src/CMakeLists.txt
+--- a/src/CMakeLists.txt	2022-11-05 22:07:26.083646700 -0400
++++ b/src/CMakeLists.txt	2022-11-05 22:05:32.365031100 -0400
+@@ -151,14 +151,14 @@
+ )
+ 
+ # NOTE: Cannot use target_link_libraries on OBJECT libraries with old versions of CMake
+-target_include_directories(exiv2lib_int PRIVATE ${ZLIB_INCLUDE_DIR})
++#target_include_directories(exiv2lib_int PRIVATE ${ZLIB_INCLUDE_DIR})
+ target_include_directories(exiv2lib SYSTEM PRIVATE 
+     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/xmpsdk/include>
+ )
+ 
+ if (EXIV2_ENABLE_XMP OR EXIV2_ENABLE_EXTERNAL_XMP)
+-    target_include_directories(exiv2lib PRIVATE ${EXPAT_INCLUDE_DIR})
+-    target_link_libraries(exiv2lib PRIVATE ${EXPAT_LIBRARIES})
++    #target_include_directories(exiv2lib PRIVATE ${EXPAT_INCLUDE_DIR})
++    #target_link_libraries(exiv2lib PRIVATE ${EXPAT_LIBRARIES})
+ 
+     if (WIN32)
+         target_compile_definitions(exiv2lib PRIVATE XML_STATIC)
+@@ -227,7 +227,7 @@
+ endif()
+ 
+ if( EXIV2_ENABLE_PNG )
+-	target_link_libraries( exiv2lib PRIVATE ZLIB::ZLIB)
++	#target_link_libraries( exiv2lib PRIVATE ZLIB::ZLIB)
+ endif()
+ 
+ if( EXIV2_ENABLE_NLS )
+diff --recursive --unified a/xmpsdk/CMakeLists.txt b/xmpsdk/CMakeLists.txt
+--- a/xmpsdk/CMakeLists.txt	2021-10-21 13:01:10.000000000 -0400
++++ b/xmpsdk/CMakeLists.txt	2022-11-05 22:02:49.275050200 -0400
+@@ -26,15 +26,15 @@
+     include/XMP_Version.h
+ )
+ 
+-target_link_libraries(exiv2-xmp
+-    PRIVATE 
+-        $<BUILD_INTERFACE:${EXPAT_LIBRARY}>
+-)
++#target_link_libraries(exiv2-xmp
++#    PRIVATE 
++#        $<BUILD_INTERFACE:${EXPAT_LIBRARY}>
++#)
+ 
+ target_include_directories(exiv2-xmp
+     PRIVATE 
+         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/xmpsdk/include>
+-        ${EXPAT_INCLUDE_DIR}
++        #${EXPAT_INCLUDE_DIR}
+ )
+ 
+ # Prevent a denial-service-attack related to XML entity expansion

@@ -340,20 +340,6 @@ index 41c34192..5bf6adb6 100644
  
  #include <exiv2/exiv2.hpp>
  #include <iostream>
-diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 26e5a951..98a06e31 100644
---- a/src/CMakeLists.txt
-+++ b/src/CMakeLists.txt
-@@ -138,6 +138,9 @@ set_target_properties( exiv2lib PROPERTIES
-     COMPILE_FLAGS ${EXTRA_COMPILE_FLAGS}
- )
- 
-+# TIFF reader is trying to read XMP even when it is disabled and generates warnings
-+add_compile_definitions(SUPPRESS_WARNINGS)
-+
- if (MSVC)
-     set_target_properties(exiv2lib PROPERTIES LINK_FLAGS "/ignore:4099")
- endif()
 diff --git a/src/actions.hpp b/src/actions.hpp
 index 7bcd8a66..8dd797f8 100644
 --- a/src/actions.hpp

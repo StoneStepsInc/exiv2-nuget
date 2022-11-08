@@ -3,6 +3,8 @@
   <PropertyGroup Label="UserMacros">
     <!-- exiv2 library name for all build configurations -->
     <Exiv2Name>exiv2</Exiv2Name>
+    <!-- exiv2-xmp library name for all build configurations -->
+    <Exiv2XMPName>exiv2-xmp</Exiv2XMPName>
     <!-- Define a macro that can be used in project files to reference package directories -->
     <Exiv2Dir>$(MSBuildThisFileDirectory)</Exiv2Dir>
   </PropertyGroup>

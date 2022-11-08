@@ -2,6 +2,7 @@
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Library Include="$(Exiv2Dir)lib\$(Platform)\$(Configuration)\$(Exiv2Name).lib" />
+    <Library Include="$(Exiv2Dir)lib\$(Platform)\$(Configuration)\$(Exiv2XMPName).lib" />
   </ItemGroup>
   <ItemDefinitionGroup>
     <ClCompile>

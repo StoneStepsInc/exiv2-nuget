@@ -23,6 +23,10 @@ project using this package.
  * ws2_32.lib
  * shell32.lib
 
+You may need to copy PDB files from package dependencies to
+the project output directory in order to avoid linker warnings
+reporting missing zLib and Expat PDB files.
+
 See README.md in Exiv2-Nuget project for more details.
 
 https://github.com/StoneStepsInc/exiv2-nuget

@@ -32,17 +32,70 @@ tar xzf %EXIV2_FNAME%
 cd %EXIV2_DNAME%
 
 rem
-rem Patch the source to work around build problems
+rem Patch the source to work around build problems described for
+rem each patch.
 rem
-"%PATCH%" -p1 --unified --input ..\patches\cmake.patch
-"%PATCH%" -p1 --unified --input ..\patches\auto-ptr.patch
+
+rem Replace auto_ptr with unique_ptr to allow compiling in C++17
+"%PATCH%" -p1 --unified --input ..\patches\01-auto-ptr.patch
+
+rem Disable stdout warnings that may be reported while reading EXIF
+"%PATCH%" -p1 --unified --input ..\patches\02-cmake-lists.patch
+
+rem Disable CMake's package location to allow installing required Nuget packages
+"%PATCH%" -p1 --unified --input ..\patches\03-cmake-find-zlib-expat.patch
 
 call "%VCVARSALL%" x64
 
 rem
-rem Generate VS projects in case we need to set up Nuget dependencies later
+rem Generate VS projects to allow us to set up Nuget dependencies
+rem below.
 rem
-cmake -S . -B build -G "Visual Studio 17 2022" -A x64
+cmake -S . -B build -G "Visual Studio 17 2022" -A x64 ^
+    -DBUILD_SHARED_LIBS=OFF ^
+    -DEXIV2_ENABLE_WEBREADY=OFF ^
+    -DEXIV2_ENABLE_CURL=OFF ^
+    -DEXIV2_ENABLE_XMP=ON ^
+    -DEXIV2_ENABLE_SSH=OFF ^
+    -DEXIV2_BUILD_SAMPLES=OFF ^
+    -DEXIV2_BUILD_EXIV2_COMMAND=OFF ^
+    -DEXIV2_BUILD_UNIT_TESTS=OFF ^
+    -DEXIV2_BUILD_FUZZ_TESTS=OFF ^
+    -DEXIV2_ENABLE_PNG=ON
+
+rem
+rem This patching is a desperate hack to work around lack of Nuget
+rem integration in CMake, which is caused by Nuget not providing
+rem any way to modify .vcxproj files via command line tools.
+rem
+rem Each patch is created by installing required Nuget packages
+rem manually in CMake-generated project files and saving patches
+rem against original project files. This is a very error-prone
+rem process because CMake generates project files with absolute
+rem file paths, so patches can only work in the same environment
+rem where they were generated. In order to work around this
+rem problem, the reference to packages.config added by Nuget
+rem into .vcxproj after packages were manually installed, was
+rem removed before a patch was generated, so these patches do
+rem not have any absolute paths in them.
+rem
+rem This approach is fragile and may break if either Nuget or
+rem CMake change their formats in how the modify or generate
+rem .vcxproj files, respectively. It works for now, so this
+rem will be revisited when any of these tools are changed or
+rem when it breaks beyond repair.
+rem
+"%PATCH%" -p1 --unified --input ..\patches\20-vs-nuget-exiv2lib.patch
+"%PATCH%" -p1 --unified --input ..\patches\21-vs-nuget-exiv2lib_int.patch
+"%PATCH%" -p1 --unified --input ..\patches\22-vs-nuget-exiv2-xmp.patch
+
+rem
+rem This command downloads and sets up all packages, but won't
+rem modify .vcxproj files. Nuget refused to consider this as a
+rem deficiency, so it isn't likely that it will be fixed.
+rem
+nuget install StoneSteps.zLib.VS2022.Static -SolutionDirectory build
+nuget install StoneSteps.Expat.VS2022.Static -SolutionDirectory build
 
 rem
 rem Build x64 Debug/Release
@@ -58,7 +111,6 @@ copy COPYING ..\nuget\licenses\
 
 mkdir ..\nuget\build\native\lib\x64\Debug
 xcopy /Y build\lib\Debug\* ..\nuget\build\native\lib\x64\Debug\
-rem do not fish out PDBs outside build\ (e.g. build\src\exiv2lib_int.dir\Debug\exiv2lib_int.pdb)
 
 mkdir ..\nuget\build\native\lib\x64\Release
 xcopy /Y build\lib\Release\* ..\nuget\build\native\lib\x64\Release\

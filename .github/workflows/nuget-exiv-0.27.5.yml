@@ -98,14 +98,39 @@ jobs:
     - name: Patch source
       working-directory: ${{ env.EXIV2_DNAME }}
       run: |
-        patch -p1 --unified --input ..\patches\cmake.patch
-        patch -p1 --unified --input ..\patches\auto-ptr.patch
+        patch -p1 --unified --input ..\patches\01-auto-ptr.patch
+        patch -p1 --unified --input ..\patches\02-cmake-lists.patch
+        patch -p1 --unified --input ..\patches\03-cmake-find-zlib-expat.patch
 
     - name: Generate projects
       working-directory: ${{ env.EXIV2_DNAME }}
       run: |
         call "${{ env.VCVARSALL }}" x64
-        cmake -S . -B build -G "Visual Studio 17 2022" -A x64
+        cmake -S . -B build -G "Visual Studio 17 2022" -A x64 ^
+            -DBUILD_SHARED_LIBS=OFF ^
+            -DEXIV2_ENABLE_WEBREADY=OFF ^
+            -DEXIV2_ENABLE_CURL=OFF ^
+            -DEXIV2_ENABLE_XMP=ON ^
+            -DEXIV2_ENABLE_SSH=OFF ^
+            -DEXIV2_BUILD_SAMPLES=OFF ^
+            -DEXIV2_BUILD_EXIV2_COMMAND=OFF ^
+            -DEXIV2_BUILD_UNIT_TESTS=OFF ^
+            -DEXIV2_BUILD_FUZZ_TESTS=OFF ^
+            -DEXIV2_ENABLE_PNG=ON
+
+      # this is a hack - see make-package.bat for more details
+    - name: Patch CMake/VS projects
+      working-directory: ${{ env.EXIV2_DNAME }}
+      run: |
+        patch -p1 --unified --input ..\patches\20-vs-nuget-exiv2lib.patch
+        patch -p1 --unified --input ..\patches\21-vs-nuget-exiv2lib_int.patch
+        patch -p1 --unified --input ..\patches\22-vs-nuget-exiv2-xmp.patch
+
+    - name: Install Nuget dependencies
+      working-directory: ${{ env.EXIV2_DNAME }}
+      run: |
+        nuget install StoneSteps.zLib.VS2022.Static -SolutionDirectory build
+        nuget install StoneSteps.Expat.VS2022.Static -SolutionDirectory build
 
     - name: Build x64/Debug
       working-directory: ${{ env.EXIV2_DNAME }}
@@ -119,7 +144,6 @@ jobs:
         call "${{ env.VCVARSALL }}" x64
         cmake --build build --config Release
 
-      # do not fish out PDBs outside build\ (e.g. build\src\exiv2lib_int.dir\Debug\exiv2lib_int.pdb)
     - name: Collect artifacts
       working-directory: ${{ env.EXIV2_DNAME }}
       run: |

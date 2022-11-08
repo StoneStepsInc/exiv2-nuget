@@ -25,6 +25,16 @@ https://github.com/Exiv2/exiv2/releases/tag/v0.27.5
     </releaseNotes>
     <copyright>Copyright (C) 2004-2022 Exiv2 authors</copyright>
     <tags>Exiv2,EXIF,native,library</tags>
+    <dependencies>
+      <!--
+      It would be better to specify a range, like [2.5.0.2,2.5.1), so
+      the latest package revision is used, but Nuget just picks up the
+      first revision (the 4th version component) in this case, even if
+      newer revisions are available.
+      -->
+      <dependency id="StoneSteps.zLib.VS2022.Static" version="[1.2.13.1]"/>
+      <dependency id="StoneSteps.Expat.VS2022.Static" version="[2.5.0.2]"/>
+    </dependencies>
   </metadata>
   <files>
    <file src="README.txt" target=""/>

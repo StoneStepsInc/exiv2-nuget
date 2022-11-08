@@ -1,6 +1,6 @@
 ## Exiv2 Nuget Package
 
-This project builds a Exiv2 Nuget package with static Exiv2
+This project builds an Exiv2 Nuget package with static Exiv2
 libraries and header files  for the `x64` platform and `Debug`/
 `Release` configurations.
 
@@ -24,17 +24,77 @@ not work for any other configuration names. Do not install this
 package for projects with configurations other than `Debug` and
 `Release`.
 
-Libraries in this package are built without Exiv2 dependencies,
-which means that only basic EXIF information will be available.
-For example, XMP data requires XML dependencies and will not
-be available. Similarly, PNG files cannot be interpreted because
-zLib is not available and localization is disabled for the same
-reason.
+CMake is configured to build Exiv2 with the following feature
+options:
 
-The source for this package is patched to disable dependencies
-and to compile in C\+\+17. The latter change replaces `std::auto_ptr`,
-with `std::unique_ptr` throughout Exiv2 source. See the `patches`
-directory for details about these changes.
+  * `BUILD_SHARED_LIBS=OFF`
+  * `EXIV2_ENABLE_WEBREADY=OFF`
+  * `EXIV2_ENABLE_CURL=OFF`
+  * `EXIV2_ENABLE_SSH=OFF`
+  * `EXIV2_BUILD_EXIV2_COMMAND=OFF`
+  * `EXIV2_ENABLE_XMP=ON`
+  * `EXIV2_ENABLE_PNG=ON`
+
+You may need to copy PDB files from package dependencies to the
+output directory in order to avoid linker warnings reporting for
+missing zLib and Expat PDB files. See _Build Events > Pre-Link
+Events_ in the sample project for an example.
+
+## Exiv2 Changes
+
+Exiv2 source that was used to create this package contains a few
+changes applied in patches described in this section against the
+Exiv2 release indicated in the package version.
+
+### `01-auto-ptr.patch`
+
+This patch replaces `std::auto_ptr` with `std::unique_ptr`, so
+the source compiles in C\+\+17.
+
+There is similar work done in the trunk of the Exiv2 project,
+which will be available at some point and will require projects
+consuming Exiv2 updated to use the new pointer type name.
+
+In this patch, however, the type `Exiv2::AutoPtr` was kept
+intact to minimize the size of the patch and allow projects
+consuming this package to continue using `Exiv2::AutoPtr`.
+
+Note that the underlying type behind `Exiv2::AutoPtr` is now
+`std::unique_ptr` and projects expecting `std::auto_ptr` need
+to be updated to implement move semantics against pointers
+obtained from Exiv2. Do not use this package if your project
+requires specifically `std::auto_ptr` to work properly.
+
+### `02-cmake-lists.patch`
+
+This patch adds a definition `SUPPRESS_WARNINGS` to disable
+Exiv2 warnings reported to one of the standard streams while
+reading EXIF.
+
+### `03-cmake-find-zlib-expat.patch`
+
+This patch disables CMake's `find_package` calls looking for
+zLib and Expat on the build machine, so these dependencies can
+be injected as Nuget packages during the build process.
+
+Current version of Nuget does not provide support for updating
+`.vcxproj` files via command line tools, which limits CMake in
+being able to handle Nuget packages gracefully.
+
+### Nuget dependencies patches
+
+These patches are named with prefixes `2x-vs-` and they are
+used as a work-around for a missing Nuget capability to update
+`.vcxproj` files via command line tools when Nuget packages
+are installed in solution projects.
+
+These patches are extremely fragile and may not work when the
+next version of Nuget or CMake is installed on build machines
+or when Visual Studio changes the format of `.vcxproj`. If no
+alternative for supplying these dependencies is found when
+either of these happens, this package will be updated to
+remove dependencies from Exiv2, which will disable XMP and PNG
+support.
 
 ## Building a Nuget Package
 
@@ -45,6 +105,12 @@ or via a GitHub workflow. In each case, following steps are taken.
     its SHA-256 signature is verified.
 
   * The source is patched to build in Visual C++ 2022.
+
+  * CMake is used to generate Visual Studio project files.
+
+  * Project files generated in the previous step are patched
+    up to inject Nuget dependencies, as if they were configured
+    in Visual Studio via Nuget functionality form.
 
   * VS2022 Community Edition is used to build Exiv2 libraries
     locally and Enterprise Edition to build libraries on GitHub.
@@ -71,8 +137,8 @@ the same upstream software version, such as Exiv2 v0.27.5, the
 package revision.
 
 Nuget package revision is injected outside of the Nuget package
-configuration, during the package build process, and is not present
-in the package specification file.
+configuration, during the package build process, and is not
+present in the package specification file.
 
 Specifically, `nuget.exe` is invoked with `-Version=0.27.5.123`
 to build a package with the revision `123`.
@@ -90,9 +156,6 @@ needs to be changed in all of them for a new version of Exiv2.
 
 `EXIV2_SHA256` ia a SHA-256 checksum of the Exiv2 package file and
 needs to be changed when a new version of Exiv2 is released.
-
-Verify that the new Exiv2 archive follows the directory name
-pattern used in the `EXIV2_DNAME` variable.
 
 In the GitHub workflow YAML, `PKG_REV` must be reset to `1` (one)
 every time Exiv2 version is changed. The workflow file must be
@@ -161,5 +224,9 @@ conditionally compiled, such as the `Exiv2::http` function.
 These library references are not automatically included within
 the package to keep linking against network and Windows shell
 libraries visible.
+
+The sample project copies PDB files from package dependencies
+to the project output directory in order to avoid linker warnings
+reporting missing zLib and Expat PDB files.
 
 [nuget.org]: https://www.nuget.org/packages/StoneSteps.Exiv2.VS2022.Static/

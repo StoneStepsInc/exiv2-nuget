@@ -7,7 +7,7 @@
 
 using namespace std::literals::string_literals;
 
-void printEXIF(Exiv2::Image::AutoPtr image)
+void printEXIF(const Exiv2::Image::AutoPtr& image)
 {
    const Exiv2::ExifData& exifData = image->exifData();
 
@@ -74,25 +74,49 @@ void printEXIF(Exiv2::Image::AutoPtr image)
             break;
          case Exiv2::TypeId::asciiString: {
             //
-            // Exiv2::AsciiValue doesn't provide any additional string interface
-            // and only ensures strings are handled as strings behind the scenes.
-            // This means there's no fast access to string data and data may be
-            // obtained either via toString, which uses a string stream buffer
-            // or via `copy`, which copies the entire sequence of bytes.
+            // Exiv2::AsciiValue exposes the underlying string as a public data
+            // member, which works out as a much faster way to access the string,
+            // compared to the toString method, which uses a string stream.
             //
             const Exiv2::AsciiValue& value = static_cast<const Exiv2::AsciiValue&>(i->value());
 
-            printf(" %s", i->toString().c_str());
+            printf(" %s", value.value_.c_str());
             }
             break;
+         break;
          case Exiv2::TypeId::undefined: {
+            const Exiv2::CommentValue *value;
+
             //
-            // Undefined field can have any underlying format, such as one byte
-            // for a scene type or kilobytes for maker notes. This type is mapped
-            // to DataValue.
+            // TypeId::comment is set inthernally when allocating a value for
+            // this field, but the type used for this is discarded (e.g. in
+            // Tiffreader) and `undefined` is set in the value using EXIF's
+            // original type. Using dynamic_cast<CommentValue> is a slower,
+            // but more reliable approach.
             //
-            for(long c = 0; c < std::min<long>(20, i->count()); c++)
-               printf(" %02hhx", static_cast<unsigned char>(i->toLong(c)));
+            if(i->tag() == 0x9286 && (value = dynamic_cast<const Exiv2::CommentValue*>(&i->value())) != nullptr) {
+               //
+               // CommentValue::comment is very inefficient and scan the comment
+               // string multiple times searching for the null character. It also
+               // makes a copy of the string with substr. For ASCII comments (and
+               // UTF-8 identified as ASCII), it is better to access the public
+               // CommentValue::value_ and use EXIF spec to extract text and walk
+               // the string once to locate non-null characters.
+               // 
+               // Note that this is an "undefined" type and even though it is
+               // null-padded, it doesn't have to be null teminated.
+               //
+               printf("(charset: %s/%s) %s", Exiv2::CommentValue::CharsetInfo::code(value->charsetId()), Exiv2::CommentValue::CharsetInfo::name(value->charsetId()), value->comment().c_str());
+            }
+            else {
+               //
+               // Undefined field can have any underlying format, such as one byte
+               // for a scene type or kilobytes for maker notes. This type is mapped
+               // to DataValue.
+               //
+               for(long c = 0; c < std::min<long>(20, i->count()); c++)
+                  printf(" %02hhx", static_cast<unsigned char>(i->toLong(c)));
+            }
             }
             break;
          case Exiv2::TypeId::signedRational: {
@@ -127,6 +151,32 @@ void printEXIF(Exiv2::Image::AutoPtr image)
    }
 }
 
+void printXMP(const Exiv2::Image::AutoPtr& image)
+{
+   //
+   // XMP may be decoded when tax 0x2bc (XMLPacket) is iterated in
+   // the function above, but the image parser already decoded the
+   // data, so we print all XMP values from the image here instead.
+   // 
+   if(!image->xmpData().empty()) {
+      //
+      // XMP value key will include the XML namespace and will have
+      // the `Xmp.` prefix, so for this XMP element:
+      // 
+      //   <xmp:Rating>5</xmp:Rating>
+      //
+      // , this key will be returned. There is no tag numbers in XMP.
+      // 
+      //   Xmp.xmp.Rating (XmpText,1): 5
+      //
+      printf("\nXMP Tags: key (type, count):\n\n");
+
+      for(Exiv2::XmpData::const_iterator i = image->xmpData().begin(); i != image->xmpData().end(); ++i) {
+         printf("%s (%s,%d): %s\n", i->key().c_str(), i->typeName(), i->count(), i->toString().c_str());
+      }
+   }
+}
+
 int main(int argc, const char* argv[])
 {
    if(argc != 2) {
@@ -135,6 +185,9 @@ int main(int argc, const char* argv[])
    }
 
    try {
+      Exiv2::XmpParser::initialize();
+      Exiv2::enableBMFF();
+
       Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(argv[1]);
 
       if(!image)
@@ -142,7 +195,10 @@ int main(int argc, const char* argv[])
 
       image->readMetadata();
 
-      printEXIF(std::move(image));
+      printEXIF(image);
+      printXMP(image);
+
+      Exiv2::XmpParser::terminate();
 
       return EXIT_SUCCESS;
    }
@@ -158,6 +214,8 @@ int main(int argc, const char* argv[])
    catch (...) {
       printf("ERROR (unknown)\n");
    }
+
+   Exiv2::XmpParser::terminate();
 
    return EXIT_FAILURE;   
 }

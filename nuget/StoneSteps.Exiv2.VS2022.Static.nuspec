@@ -14,12 +14,11 @@ Package Notes:
 
   * Static libraries for Debug/Release configurations, x64 platform
   * Built in Visual C++ 2022, against Debug/Release MT/DLL MSVC CRT
-  * All 3rd-party dependencies have been disabled, which means that
-    only base EXIF information will be available.
   * Exiv2 source code v0.27.5 has been modified to compile in C++17.
-  * See README.md for more details.
+  * Compiled with XMP and PNG support enabled.
+  * See README.md for more information.
 
-See libexif release notes for details:
+See Exiv2 release notes for details:
 
 https://github.com/Exiv2/exiv2/releases/tag/v0.27.5
     </releaseNotes>

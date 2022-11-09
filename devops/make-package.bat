@@ -64,26 +64,7 @@ cmake -S . -B build -G "Visual Studio 17 2022" -A x64 ^
     -DEXIV2_ENABLE_PNG=ON
 
 rem
-rem This patching is a desperate hack to work around lack of Nuget
-rem integration in CMake, which is caused by Nuget not providing
-rem any way to modify .vcxproj files via command line tools.
-rem
-rem Each patch is created by installing required Nuget packages
-rem manually in CMake-generated project files and saving patches
-rem against original project files. This is a very error-prone
-rem process because CMake generates project files with absolute
-rem file paths, so patches can only work in the same environment
-rem where they were generated. In order to work around this
-rem problem, the reference to packages.config added by Nuget
-rem into .vcxproj after packages were manually installed, was
-rem removed before a patch was generated, so these patches do
-rem not have any absolute paths in them.
-rem
-rem This approach is fragile and may break if either Nuget or
-rem CMake change their formats in how the modify or generate
-rem .vcxproj files, respectively. It works for now, so this
-rem will be revisited when any of these tools are changed or
-rem when it breaks beyond repair.
+rem See README.md for more information about these patches.
 rem
 "%PATCH%" -p1 --unified --input ..\patches\20-vs-nuget-exiv2lib.patch
 "%PATCH%" -p1 --unified --input ..\patches\21-vs-nuget-exiv2lib_int.patch

@@ -118,7 +118,7 @@ jobs:
             -DEXIV2_BUILD_FUZZ_TESTS=OFF ^
             -DEXIV2_ENABLE_PNG=ON
 
-      # this is a hack - see make-package.bat for more details
+      # see README.md for more information about these patches
     - name: Patch CMake/VS projects
       working-directory: ${{ env.EXIV2_DNAME }}
       run: |
@@ -167,12 +167,6 @@ jobs:
       if: ${{ github.event.inputs.publish-package != 'yes' }}
       run: |
         nuget pack nuget\StoneSteps.Exiv2.VS2022.Static.nuspec -Suffix "ci.%BUILD_NUMBER%" -Version ${{ env.PKG_VER }}.${{ env.PKG_REV }}
-
-    - name: Upload build directory
-      uses: actions/upload-artifact@v3
-      with:
-        name: build-directory
-        path: ${{ env.EXIV2_DNAME }}/build
 
     - name: Upload CI Nuget package
       if: ${{ github.event.inputs.publish-package != 'yes' }}

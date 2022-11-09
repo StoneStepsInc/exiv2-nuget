@@ -168,6 +168,12 @@ jobs:
       run: |
         nuget pack nuget\StoneSteps.Exiv2.VS2022.Static.nuspec -Suffix "ci.%BUILD_NUMBER%" -Version ${{ env.PKG_VER }}.${{ env.PKG_REV }}
 
+    - name: Upload build directory
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-directory
+        path: ${{ env.EXIV2_DNAME }}/build
+
     - name: Upload CI Nuget package
       if: ${{ github.event.inputs.publish-package != 'yes' }}
       uses: actions/upload-artifact@v3

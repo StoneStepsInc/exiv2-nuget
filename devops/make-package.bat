@@ -96,6 +96,7 @@ xcopy /Y build\src\exiv2lib_int.dir\Debug\exiv2lib_int.pdb ..\nuget\build\native
 
 mkdir ..\nuget\build\native\lib\x64\Release
 xcopy /Y build\lib\Release\* ..\nuget\build\native\lib\x64\Release\
+xcopy /Y build\src\exiv2lib_int.dir\Release\exiv2lib_int.pdb ..\nuget\build\native\lib\x64\Release\
 
 mkdir ..\nuget\build\native\include\exiv2
 xcopy /Y /S include\exiv2\* ..\nuget\build\native\include\exiv2\

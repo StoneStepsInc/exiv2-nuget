@@ -1,3 +1,24 @@
+diff --git a/cmake/compilerFlags.cmake b/cmake/compilerFlags.cmake
+index 68fd8f0d..17acf5cb 100644
+--- a/cmake/compilerFlags.cmake
++++ b/cmake/compilerFlags.cmake
+@@ -150,4 +150,16 @@ if(MSVC)
+         add_compile_options("/Zc:__cplusplus")
+     endif()
+ 
++    #
++    # We cannot use RelWithDebInfo because our Nuget dependencies have
++    # only Debug and Release configurations. Having debug symbols has
++    # no downside and helps a lot when troubleshooting issues in released
++    # binaries, so we add /Zi to the release configuration if it's not
++    # there already.
++    #
++    string(FIND ${CMAKE_CXX_FLAGS_RELEASE} "/Zi" HAS_SYMBOLS)
++
++    if(HAS_SYMBOLS EQUAL -1)
++        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi")
++    endif()
+ endif()
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
 index 26e5a951..98a06e31 100644
 --- a/src/CMakeLists.txt

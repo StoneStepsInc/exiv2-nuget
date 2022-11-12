@@ -1,7 +1,8 @@
-diff --recursive --unified a/cmake/findDependencies.cmake b/cmake/findDependencies.cmake
---- a/cmake/findDependencies.cmake	2021-10-21 13:01:10.000000000 -0400
-+++ b/cmake/findDependencies.cmake	2022-11-05 22:04:14.715395600 -0400
-@@ -16,7 +16,7 @@
+diff --git a/cmake/findDependencies.cmake b/cmake/findDependencies.cmake
+index ec3a43f5..2d0c9ad0 100644
+--- a/cmake/findDependencies.cmake
++++ b/cmake/findDependencies.cmake
+@@ -16,7 +16,7 @@ endif()
  find_package(Threads REQUIRED)
  
  if( EXIV2_ENABLE_PNG )
@@ -10,7 +11,7 @@ diff --recursive --unified a/cmake/findDependencies.cmake b/cmake/findDependenci
  endif( )
  
  if( EXIV2_ENABLE_WEBREADY )
-@@ -42,7 +42,7 @@
+@@ -42,7 +42,7 @@ if (EXIV2_ENABLE_XMP AND EXIV2_ENABLE_EXTERNAL_XMP)
      message(FATAL_ERROR "EXIV2_ENABLE_XMP AND EXIV2_ENABLE_EXTERNAL_XMP are mutually exclusive.  You can only choose one of them")
  else()
      if (EXIV2_ENABLE_XMP)
@@ -19,10 +20,11 @@ diff --recursive --unified a/cmake/findDependencies.cmake b/cmake/findDependenci
      elseif (EXIV2_ENABLE_EXTERNAL_XMP)
          find_package(XmpSdk REQUIRED)
      endif ()
-diff --recursive --unified a/cmake/generateConfigFile.cmake b/cmake/generateConfigFile.cmake
---- a/cmake/generateConfigFile.cmake	2021-10-21 13:01:10.000000000 -0400
-+++ b/cmake/generateConfigFile.cmake	2022-11-05 21:56:20.083895300 -0400
-@@ -22,7 +22,7 @@
+diff --git a/cmake/generateConfigFile.cmake b/cmake/generateConfigFile.cmake
+index 0179eb5d..6207a760 100644
+--- a/cmake/generateConfigFile.cmake
++++ b/cmake/generateConfigFile.cmake
+@@ -22,7 +22,7 @@ else()
      set(EXV_HAVE_XMP_TOOLKIT OFF)
  endif()
  set(EXV_HAVE_ICONV       ${ICONV_FOUND})
@@ -31,10 +33,11 @@ diff --recursive --unified a/cmake/generateConfigFile.cmake b/cmake/generateConf
  set(EXV_UNICODE_PATH     ${EXIV2_ENABLE_WIN_UNICODE})
  
  check_cxx_symbol_exists(gmtime_r    time.h         EXV_HAVE_GMTIME_R)
-diff --recursive --unified a/src/CMakeLists.txt b/src/CMakeLists.txt
---- a/src/CMakeLists.txt	2022-11-05 22:07:26.083646700 -0400
-+++ b/src/CMakeLists.txt	2022-11-05 22:05:32.365031100 -0400
-@@ -151,14 +151,14 @@
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 98a06e31..db6269bb 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -151,14 +151,14 @@ set_target_properties( exiv2lib_int PROPERTIES
  )
  
  # NOTE: Cannot use target_link_libraries on OBJECT libraries with old versions of CMake
@@ -52,7 +55,7 @@ diff --recursive --unified a/src/CMakeLists.txt b/src/CMakeLists.txt
  
      if (WIN32)
          target_compile_definitions(exiv2lib PRIVATE XML_STATIC)
-@@ -227,7 +227,7 @@
+@@ -227,7 +227,7 @@ else()
  endif()
  
  if( EXIV2_ENABLE_PNG )
@@ -61,10 +64,11 @@ diff --recursive --unified a/src/CMakeLists.txt b/src/CMakeLists.txt
  endif()
  
  if( EXIV2_ENABLE_NLS )
-diff --recursive --unified a/xmpsdk/CMakeLists.txt b/xmpsdk/CMakeLists.txt
---- a/xmpsdk/CMakeLists.txt	2021-10-21 13:01:10.000000000 -0400
-+++ b/xmpsdk/CMakeLists.txt	2022-11-05 22:02:49.275050200 -0400
-@@ -26,15 +26,15 @@
+diff --git a/xmpsdk/CMakeLists.txt b/xmpsdk/CMakeLists.txt
+index a22698fb..7a2097f6 100644
+--- a/xmpsdk/CMakeLists.txt
++++ b/xmpsdk/CMakeLists.txt
+@@ -26,15 +26,19 @@ add_library(exiv2-xmp STATIC
      include/XMP_Version.h
  )
  
@@ -72,6 +76,10 @@ diff --recursive --unified a/xmpsdk/CMakeLists.txt b/xmpsdk/CMakeLists.txt
 -    PRIVATE 
 -        $<BUILD_INTERFACE:${EXPAT_LIBRARY}>
 -)
++#
++# EXPAT_LIBRARY is set by CMake via find_package, which is
++# disabled in this project in favor of using Nuget packages.
++#
 +#target_link_libraries(exiv2-xmp
 +#    PRIVATE 
 +#        $<BUILD_INTERFACE:${EXPAT_LIBRARY}>

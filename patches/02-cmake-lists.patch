@@ -1,3 +1,16 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 07af451e..0a6169a8 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -56,6 +56,8 @@ set( PACKAGE_BUGREPORT                "http://github.com/exiv2/exiv2" )
+ set( PACKAGE_URL                      "https://exiv2.org")
+ set( PROJECT_DESCRIPTION              "Exif/IPTC/Xmp C++ metadata library and tools plus ICC Profiles, Previews and more.")
+ 
++set(CMAKE_CXX_STANDARD 17)
++
+ if ( EXIV2_ENABLE_EXTERNAL_XMP )
+     set(EXIV2_ENABLE_XMP OFF)
+ endif()
 diff --git a/cmake/compilerFlags.cmake b/cmake/compilerFlags.cmake
 index 68fd8f0d..17acf5cb 100644
 --- a/cmake/compilerFlags.cmake

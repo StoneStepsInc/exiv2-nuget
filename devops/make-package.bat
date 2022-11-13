@@ -37,7 +37,7 @@ rem each patch.
 rem
 
 rem Replace auto_ptr with unique_ptr to allow compiling in C++17
-"%PATCH%" -p1 --unified --input ..\patches\01-auto-ptr.patch
+"%PATCH%" -p1 --unified --input ..\patches\01-c++17.patch
 
 rem Disable stdout warnings that may be reported while reading EXIF
 "%PATCH%" -p1 --unified --input ..\patches\02-cmake-lists.patch

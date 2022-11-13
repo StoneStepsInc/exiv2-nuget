@@ -33,6 +33,11 @@ void printEXIF(const Exiv2::Image::AutoPtr& image)
    printf("\nEXIF Tags: IFD/tag (type, size, count):\n\n");
 
    for(Exiv2::ExifData::const_iterator i = exifData.begin(); i != exifData.end(); ++i) {
+      //
+      // IFD IDs are tucked away in the Internal namespace, which makes
+      // it impossible to use numeric symbols in comparisons (e.g. to
+      // skip the thumbnail IFD - Exiv2::Internal::IfdId::ifd1Id).
+      //
       printf("[%x/%x] %s/%s (%s,%ld,%ld):", i->ifdId(), i->tag(), i->ifdName(), i->tagName().c_str(), i->typeName(), i->typeSize(), i->count());
 
       switch (i->typeId()) {
@@ -77,6 +82,10 @@ void printEXIF(const Exiv2::Image::AutoPtr& image)
             // Exiv2::AsciiValue exposes the underlying string as a public data
             // member, which works out as a much faster way to access the string,
             // compared to the toString method, which uses a string stream.
+            // 
+            // Some values are zero-padded and zeros are included in the size,
+            // so if an std::string is constructed from a pointer and the size,
+            // it may contain extra null characters.
             //
             const Exiv2::AsciiValue& value = static_cast<const Exiv2::AsciiValue&>(i->value());
 

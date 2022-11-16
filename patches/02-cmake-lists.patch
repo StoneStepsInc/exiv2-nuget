@@ -12,10 +12,10 @@ index 07af451e..0a6169a8 100644
      set(EXIV2_ENABLE_XMP OFF)
  endif()
 diff --git a/cmake/compilerFlags.cmake b/cmake/compilerFlags.cmake
-index 68fd8f0d..17acf5cb 100644
+index 68fd8f0d..4c071b26 100644
 --- a/cmake/compilerFlags.cmake
 +++ b/cmake/compilerFlags.cmake
-@@ -150,4 +150,16 @@ if(MSVC)
+@@ -150,4 +150,19 @@ if(MSVC)
          add_compile_options("/Zc:__cplusplus")
      endif()
  
@@ -31,6 +31,9 @@ index 68fd8f0d..17acf5cb 100644
 +    if(HAS_SYMBOLS EQUAL -1)
 +        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi")
 +    endif()
++
++    # this is a temporary option to verify whether it fixes compatibility between VC++ toolsets in GitHub and latest released
++    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /D _DISABLE_STRING_ANNOTATION")
  endif()
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
 index 26e5a951..98a06e31 100644

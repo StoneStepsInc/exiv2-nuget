@@ -16,9 +16,14 @@ Package Notes:
   * Built in Visual C++ 2022, against Debug/Release MT/DLL MSVC CRT
   * Exiv2 source code v0.27.5 has been modified to compile in C++17.
   * Compiled with XMP and PNG support enabled.
+  * Due to a bug in Visual Studio's toolsets 14.33/14.34, which
+    incorrectly optimize std::string construction, leaving internal
+    string representation without a null terminator, the release
+    version of this package is compiled with code optimization
+    disabled (/Od). A new package will be released.
   * See README.md for more information.
 
-See Exiv2 release notes for details:
+See Exiv2 release notes for version details:
 
 https://github.com/Exiv2/exiv2/releases/tag/v0.27.5
     </releaseNotes>

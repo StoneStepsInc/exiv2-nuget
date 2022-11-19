@@ -12,27 +12,10 @@ index 07af451e..0a6169a8 100644
      set(EXIV2_ENABLE_XMP OFF)
  endif()
 diff --git a/cmake/compilerFlags.cmake b/cmake/compilerFlags.cmake
-index 68fd8f0d..6e17d74d 100644
+index 68fd8f0d..f0f95de1 100644
 --- a/cmake/compilerFlags.cmake
 +++ b/cmake/compilerFlags.cmake
-@@ -127,16 +127,6 @@ if(MSVC)
-          endforeach()
-     endif()
- 
--    # remove /Ob2 and /Ob1 - they cause linker issues
--    set(obs /Ob2 /Ob1)
--    foreach(ob ${obs})
--        foreach(variable ${variables})
--            if(${variable} MATCHES ${ob} )
--                string(REGEX REPLACE ${ob} "" ${variable} "${${variable}}")
--            endif()
--      endforeach()
--    endforeach()
--
-     if ( EXIV2_EXTRA_WARNINGS )
-         string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-     endif ()
-@@ -150,4 +140,29 @@ if(MSVC)
+@@ -150,4 +150,29 @@ if(MSVC)
          add_compile_options("/Zc:__cplusplus")
      endif()
  
@@ -54,12 +37,12 @@ index 68fd8f0d..6e17d74d 100644
 +    # which incorrectly optimize std::string construction, leaving internal
 +    # string representation without a null terminator.
 +    #
-+    string(REGEX MATCH "/Ob[0-3]" HAS_MSVC_OBx ${CMAKE_CXX_FLAGS_RELEASE})
++    string(REGEX MATCH "/O[12]" HAS_MSVC_Ox ${CMAKE_CXX_FLAGS_RELEASE})
 +
-+    if(HAS_MSVC_OBx STRGREATER "")
-+        string(REGEX REPLACE "/Ob[0-3]" "/Ob1" CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
++    if(HAS_MSVC_Ox STRGREATER "")
++        string(REGEX REPLACE "/O[12]" "/Od" CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
 +    else()
-+        string(APPEND CMAKE_CXX_FLAGS_RELEASE " /Ob1")
++        string(APPEND CMAKE_CXX_FLAGS_RELEASE " /Od")
 +    endif()
  endif()
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt

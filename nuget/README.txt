@@ -27,12 +27,6 @@ You may need to copy PDB files from package dependencies to
 the project output directory in order to avoid linker warnings
 reporting missing zLib and Expat PDB files.
 
-Due to a bug in Visual Studio's toolsets 14.33/14.34, which
-incorrectly optimize std::string construction, leaving internal
-string representation without a null terminator, the release
-version of this package is compiled with code optimization
-disabled (/Od). A new package will be released.
-
 See README.md in Exiv2-Nuget project for more details.
 
 https://github.com/StoneStepsInc/exiv2-nuget

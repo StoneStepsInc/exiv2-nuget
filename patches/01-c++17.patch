@@ -693,7 +693,7 @@ index 5f4932be..bc6f779d 100644
          {
              image.reset();
 diff --git a/src/image.cpp b/src/image.cpp
-index fa5b8be3..05bd73e8 100644
+index fa5b8be3..598128ca 100644
 --- a/src/image.cpp
 +++ b/src/image.cpp
 @@ -167,7 +167,7 @@ namespace Exiv2 {
@@ -741,7 +741,7 @@ index fa5b8be3..05bd73e8 100644
          if (image.get() == 0) throw Error(kerUnsupportedImageType, type);
          return image;
      }
-@@ -975,7 +975,7 @@ namespace Exiv2 {
+@@ -975,14 +975,14 @@ namespace Exiv2 {
      Image::AutoPtr ImageFactory::create(int type,
                                          const std::wstring& wpath)
      {
@@ -750,6 +750,15 @@ index fa5b8be3..05bd73e8 100644
          // Create or overwrite the file, then close it
          if (fileIo->open("w+b") != 0) {
              throw WError(kerFileOpenFailed, wpath, "w+b", strError().c_str());
+         }
+         fileIo->close();
+-        BasicIo::AutoPtr io(fileIo);
+-        Image::AutoPtr image = create(type, io);
++        BasicIo::AutoPtr io(std::move(fileIo));
++        Image::AutoPtr image = create(type, std::move(io));
+         if (image.get() == 0) throw Error(kerUnsupportedImageType, type);
+         return image;
+     }
 @@ -991,7 +991,7 @@ namespace Exiv2 {
      Image::AutoPtr ImageFactory::create(int type)
      {

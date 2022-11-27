@@ -34,6 +34,7 @@ options:
   * `EXIV2_BUILD_EXIV2_COMMAND=OFF`
   * `EXIV2_ENABLE_XMP=ON`
   * `EXIV2_ENABLE_PNG=ON`
+  * `EXIV2_ENABLE_WIN_UNICODE=ON`
 
 You may need to copy PDB files from package dependencies to the
 output directory in order to avoid linker warnings reporting for

@@ -116,7 +116,8 @@ jobs:
             -DEXIV2_BUILD_EXIV2_COMMAND=OFF ^
             -DEXIV2_BUILD_UNIT_TESTS=OFF ^
             -DEXIV2_BUILD_FUZZ_TESTS=OFF ^
-            -DEXIV2_ENABLE_PNG=ON
+            -DEXIV2_ENABLE_PNG=ON ^
+            -DEXIV2_ENABLE_WIN_UNICODE=ON
 
       # see README.md for more information about these patches
     - name: Patch CMake/VS projects

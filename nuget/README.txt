@@ -27,12 +27,6 @@ You may need to copy PDB files from package dependencies to
 the project output directory in order to avoid linker warnings
 reporting missing zLib and Expat PDB files.
 
-Due to a bug in VC++ toolsets 14.33/14.34 that yields malformed
-std::string instances lacking null termination in release builds,
-this package was built outside of GitHub using toolset 14.34.
-Projects using this package must use a toolset with the same or
-greater version.
-
 See README.md in Exiv2-Nuget project for more details.
 
 https://github.com/StoneStepsInc/exiv2-nuget

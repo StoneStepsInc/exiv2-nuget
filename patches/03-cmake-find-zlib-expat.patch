@@ -1,8 +1,6 @@
-diff --git a/cmake/findDependencies.cmake b/cmake/findDependencies.cmake
-index ec3a43f5..2d0c9ad0 100644
 --- a/cmake/findDependencies.cmake
 +++ b/cmake/findDependencies.cmake
-@@ -16,7 +16,7 @@ endif()
+@@ -22,7 +22,7 @@ find_package (Python3 COMPONENTS Interpreter)
  find_package(Threads REQUIRED)
  
  if( EXIV2_ENABLE_PNG )
@@ -11,7 +9,7 @@ index ec3a43f5..2d0c9ad0 100644
  endif( )
  
  if( EXIV2_ENABLE_WEBREADY )
-@@ -42,7 +42,7 @@ if (EXIV2_ENABLE_XMP AND EXIV2_ENABLE_EXTERNAL_XMP)
+@@ -48,7 +48,7 @@ if (EXIV2_ENABLE_XMP AND EXIV2_ENABLE_EXTERNAL_XMP)
      message(FATAL_ERROR "EXIV2_ENABLE_XMP AND EXIV2_ENABLE_EXTERNAL_XMP are mutually exclusive.  You can only choose one of them")
  else()
      if (EXIV2_ENABLE_XMP)
@@ -34,10 +32,10 @@ index 0179eb5d..6207a760 100644
  
  check_cxx_symbol_exists(gmtime_r    time.h         EXV_HAVE_GMTIME_R)
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 98a06e31..db6269bb 100644
+index de874f52..34b0fc37 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
-@@ -151,14 +151,14 @@ set_target_properties( exiv2lib_int PROPERTIES
+@@ -152,14 +152,14 @@ set_target_properties( exiv2lib_int PROPERTIES
  )
  
  # NOTE: Cannot use target_link_libraries on OBJECT libraries with old versions of CMake
@@ -55,7 +53,7 @@ index 98a06e31..db6269bb 100644
  
      if (WIN32)
          target_compile_definitions(exiv2lib PRIVATE XML_STATIC)
-@@ -227,7 +227,7 @@ else()
+@@ -228,7 +228,7 @@ else()
  endif()
  
  if( EXIV2_ENABLE_PNG )

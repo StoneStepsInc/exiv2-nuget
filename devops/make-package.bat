@@ -7,12 +7,12 @@ if "%~1" == "" (
   goto :EOF
 )
 
-set PKG_VER=0.27.5
+set PKG_VER=0.27.6
 set PKG_REV=%~1
 
 set EXIV2_FNAME=exiv2-%PKG_VER%-Source.tar.gz
 set EXIV2_DNAME=exiv2-%PKG_VER%-Source
-set EXIV2_SHA256=35a58618ab236a901ca4928b0ad8b31007ebdc0386d904409d825024e45ea6e2
+set EXIV2_SHA256=4c192483a1125dc59a3d70b30d30d32edace9e14adf52802d2f853abf72db8a6
 
 set PATCH=c:\Program Files\Git\usr\bin\patch.exe
 set SEVENZIP_EXE=c:\Program Files\7-Zip\7z.exe

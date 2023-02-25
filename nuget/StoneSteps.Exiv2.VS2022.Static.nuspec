@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>StoneSteps.Exiv2.VS2022.Static</id>
-    <version>0.27.5</version>
+    <version>0.27.6</version>
     <authors>Exiv2 authors</authors>
     <owners>Stone Steps (package)</owners>
     <license type="file">licenses\COPYING</license>
@@ -21,7 +21,7 @@ Package Notes:
 
 See Exiv2 release notes for version details:
 
-https://github.com/Exiv2/exiv2/releases/tag/v0.27.5
+https://github.com/Exiv2/exiv2/releases/tag/v0.27.6
     </releaseNotes>
     <copyright>Copyright (C) 2004-2022 Exiv2 authors</copyright>
     <tags>Exiv2,EXIF,native,library</tags>

@@ -1,5 +1,3 @@
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 07af451e..0a6169a8 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -56,6 +56,8 @@ set( PACKAGE_BUGREPORT                "http://github.com/exiv2/exiv2" )
@@ -33,10 +31,10 @@ index 68fd8f0d..f17663dd 100644
 +    endif()
  endif()
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 26e5a951..98a06e31 100644
+index aa72075b..de874f52 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
-@@ -138,6 +138,9 @@ set_target_properties( exiv2lib PROPERTIES
+@@ -139,6 +139,9 @@ set_target_properties( exiv2lib PROPERTIES
      COMPILE_FLAGS ${EXTRA_COMPILE_FLAGS}
  )
  

@@ -1,5 +1,3 @@
-diff --git a/.gitignore b/.gitignore
-index d3090138..0e4d54e2 100644
 --- a/.gitignore
 +++ b/.gitignore
 @@ -1,3 +1,5 @@
@@ -608,10 +606,10 @@ index 79402e62..7d1df8b9 100644
              image.reset();
          }
 diff --git a/src/exif.cpp b/src/exif.cpp
-index 47330e1a..59340f1e 100644
+index 70293f14..663393df 100644
 --- a/src/exif.cpp
 +++ b/src/exif.cpp
-@@ -80,7 +80,7 @@ namespace {
+@@ -81,7 +81,7 @@ namespace {
      class Thumbnail {
      public:
          //! Shortcut for a %Thumbnail auto pointer.
@@ -620,7 +618,7 @@ index 47330e1a..59340f1e 100644
  
          //! @name Creators
          //@{
-@@ -123,7 +123,7 @@ namespace {
+@@ -124,7 +124,7 @@ namespace {
      class TiffThumbnail : public Thumbnail {
      public:
          //! Shortcut for a %TiffThumbnail auto pointer.
@@ -629,7 +627,7 @@ index 47330e1a..59340f1e 100644
  
          //! @name Manipulators
          //@{
-@@ -147,7 +147,7 @@ namespace {
+@@ -148,7 +148,7 @@ namespace {
      class JpegThumbnail : public Thumbnail {
      public:
          //! Shortcut for a %JpegThumbnail auto pointer.
@@ -638,7 +636,7 @@ index 47330e1a..59340f1e 100644
  
          //! @name Manipulators
          //@{
-@@ -192,10 +192,10 @@ namespace Exiv2 {
+@@ -193,10 +193,10 @@ namespace Exiv2 {
      template<typename T>
      Exiv2::Exifdatum& setValue(Exiv2::Exifdatum& exifDatum, const T& value)
      {
@@ -652,7 +650,7 @@ index 47330e1a..59340f1e 100644
          return exifDatum;
      }
  
-@@ -433,7 +433,7 @@ namespace Exiv2 {
+@@ -434,7 +434,7 @@ namespace Exiv2 {
  
      Value::AutoPtr Exifdatum::getValue() const
      {
@@ -661,7 +659,7 @@ index 47330e1a..59340f1e 100644
      }
  
      long Exifdatum::sizeDataArea() const
-@@ -741,7 +741,7 @@ namespace Exiv2 {
+@@ -742,7 +742,7 @@ namespace Exiv2 {
  
          // Encode and check if the result fits into a JPEG Exif APP1 segment
          MemIo mio1;
@@ -693,7 +691,7 @@ index 5f4932be..bc6f779d 100644
          {
              image.reset();
 diff --git a/src/image.cpp b/src/image.cpp
-index fa5b8be3..598128ca 100644
+index c478dcce..da83894e 100644
 --- a/src/image.cpp
 +++ b/src/image.cpp
 @@ -167,7 +167,7 @@ namespace Exiv2 {
@@ -705,7 +703,7 @@ index fa5b8be3..598128ca 100644
            pixelWidth_(0),
            pixelHeight_(0),
            imageType_(imageType),
-@@ -938,7 +938,7 @@ namespace Exiv2 {
+@@ -940,7 +940,7 @@ namespace Exiv2 {
      Image::AutoPtr ImageFactory::open(const byte* data, long size)
      {
          BasicIo::AutoPtr io(new MemIo(data, size));
@@ -714,7 +712,7 @@ index fa5b8be3..598128ca 100644
          if (image.get() == 0) throw Error(kerMemoryContainsUnknownImageType);
          return image;
      }
-@@ -950,7 +950,7 @@ namespace Exiv2 {
+@@ -952,7 +952,7 @@ namespace Exiv2 {
          }
          for (unsigned int i = 0; registry[i].imageType_ != ImageType::none; ++i) {
              if (registry[i].isThisType_(*io, false)) {
@@ -723,7 +721,7 @@ index fa5b8be3..598128ca 100644
              }
          }
          return Image::AutoPtr();
-@@ -959,14 +959,14 @@ namespace Exiv2 {
+@@ -961,14 +961,14 @@ namespace Exiv2 {
      Image::AutoPtr ImageFactory::create(int type,
                                          const std::string& path)
      {
@@ -741,7 +739,7 @@ index fa5b8be3..598128ca 100644
          if (image.get() == 0) throw Error(kerUnsupportedImageType, type);
          return image;
      }
-@@ -975,14 +975,14 @@ namespace Exiv2 {
+@@ -977,14 +977,14 @@ namespace Exiv2 {
      Image::AutoPtr ImageFactory::create(int type,
                                          const std::wstring& wpath)
      {
@@ -759,7 +757,7 @@ index fa5b8be3..598128ca 100644
          if (image.get() == 0) throw Error(kerUnsupportedImageType, type);
          return image;
      }
-@@ -991,7 +991,7 @@ namespace Exiv2 {
+@@ -993,7 +993,7 @@ namespace Exiv2 {
      Image::AutoPtr ImageFactory::create(int type)
      {
          BasicIo::AutoPtr io(new MemIo);
@@ -768,7 +766,7 @@ index fa5b8be3..598128ca 100644
          if (image.get() == 0) throw Error(kerUnsupportedImageType, type);
          return image;
      }
-@@ -1002,7 +1002,7 @@ namespace Exiv2 {
+@@ -1004,7 +1004,7 @@ namespace Exiv2 {
          // BasicIo instance does not need to be open
          const Registry* r = find(registry, type);
          if (0 != r) {
@@ -800,32 +798,32 @@ index 75024f32..87f2f2e8 100644
      }
  
 diff --git a/src/jp2image.cpp b/src/jp2image.cpp
-index 9a475371..6aecb3c0 100644
+index eb49d042..1ac3e5c7 100644
 --- a/src/jp2image.cpp
 +++ b/src/jp2image.cpp
-@@ -133,7 +133,7 @@ namespace Exiv2
+@@ -84,7 +84,7 @@ const unsigned char Jp2Blank[] = {
+ // class member definitions
+ namespace Exiv2
  {
- 
-     Jp2Image::Jp2Image(BasicIo::AutoPtr io, bool create)
--            : Image(ImageType::jp2, mdExif | mdIptc | mdXmp, io)
-+            : Image(ImageType::jp2, mdExif | mdIptc | mdXmp, std::move(io))
+-    Jp2Image::Jp2Image(BasicIo::AutoPtr io, bool create) : Image(ImageType::jp2, mdExif | mdIptc | mdXmp, io)
++    Jp2Image::Jp2Image(BasicIo::AutoPtr io, bool create) : Image(ImageType::jp2, mdExif | mdIptc | mdXmp, std::move(io))
      {
-         if (create)
-         {
-@@ -974,7 +974,7 @@ static void boxes_check(size_t b,size_t m)
+         if (create) {
+             if (io_->open() == 0) {
+@@ -952,7 +952,7 @@ namespace Exiv2
      // free functions
      Image::AutoPtr newJp2Instance(BasicIo::AutoPtr io, bool create)
      {
 -        Image::AutoPtr image(new Jp2Image(io, create));
 +        Image::AutoPtr image(new Jp2Image(std::move(io), create));
-         if (!image->good())
-         {
+         if (!image->good()) {
              image.reset();
+         }
 diff --git a/src/jpgimage.cpp b/src/jpgimage.cpp
-index e57bffbd..759a1118 100644
+index c874e72a..12677a34 100644
 --- a/src/jpgimage.cpp
 +++ b/src/jpgimage.cpp
-@@ -314,7 +314,7 @@ namespace Exiv2 {
+@@ -318,7 +318,7 @@ namespace Exiv2 {
  
      JpegBase::JpegBase(int type, BasicIo::AutoPtr io, bool create,
                         const byte initData[], long dataSize)
@@ -834,7 +832,7 @@ index e57bffbd..759a1118 100644
      {
          if (create) {
              initImage(initData, dataSize);
-@@ -1317,7 +1317,7 @@ namespace Exiv2 {
+@@ -1321,7 +1321,7 @@ namespace Exiv2 {
          0x11,0x03,0x11,0x00,0x3F,0x00,0xA0,0x00,0x0F,0xFF,0xD9 };
  
      JpegImage::JpegImage(BasicIo::AutoPtr io, bool create)
@@ -843,7 +841,7 @@ index e57bffbd..759a1118 100644
      {
      }
  
-@@ -1344,7 +1344,7 @@ namespace Exiv2 {
+@@ -1348,7 +1348,7 @@ namespace Exiv2 {
  
      Image::AutoPtr newJpegInstance(BasicIo::AutoPtr io, bool create)
      {
@@ -852,7 +850,7 @@ index e57bffbd..759a1118 100644
          if (!image->good()) {
              image.reset();
          }
-@@ -1369,7 +1369,7 @@ namespace Exiv2 {
+@@ -1373,7 +1373,7 @@ namespace Exiv2 {
      const byte ExvImage::blank_[] = { 0xff,0x01,'E','x','i','v','2',0xff,0xd9 };
  
      ExvImage::ExvImage(BasicIo::AutoPtr io, bool create)
@@ -861,7 +859,7 @@ index e57bffbd..759a1118 100644
      {
      }
  
-@@ -1398,7 +1398,7 @@ namespace Exiv2 {
+@@ -1402,7 +1402,7 @@ namespace Exiv2 {
      Image::AutoPtr newExvInstance(BasicIo::AutoPtr io, bool create)
      {
          Image::AutoPtr image;
@@ -946,7 +944,7 @@ index 4dfb948c..8ad0fbe9 100644
          {
              image.reset();
 diff --git a/src/pngimage.cpp b/src/pngimage.cpp
-index 64fce49f..ec8e530a 100644
+index 5363c564..a2bddb73 100644
 --- a/src/pngimage.cpp
 +++ b/src/pngimage.cpp
 @@ -74,7 +74,7 @@ namespace Exiv2 {
@@ -958,7 +956,7 @@ index 64fce49f..ec8e530a 100644
      {
          if (create)
          {
-@@ -744,7 +744,7 @@ namespace Exiv2 {
+@@ -745,7 +745,7 @@ namespace Exiv2 {
      // free functions
      Image::AutoPtr newPngInstance(BasicIo::AutoPtr io, bool create)
      {
@@ -968,10 +966,10 @@ index 64fce49f..ec8e530a 100644
          {
              image.reset();
 diff --git a/src/preview.cpp b/src/preview.cpp
-index 8b68a3c4..2eae8e42 100644
+index ee9d430c..6f042e93 100644
 --- a/src/preview.cpp
 +++ b/src/preview.cpp
-@@ -88,7 +88,7 @@ namespace {
+@@ -89,7 +89,7 @@ namespace {
          virtual ~Loader() {}
  
          //! Loader auto pointer
@@ -1274,7 +1272,7 @@ index 46a390a8..5291efb0 100644
      //! Stack to hold a path from the TIFF root element to a TIFF entry
      typedef std::stack<TiffPathItem> TiffPath;
 diff --git a/src/tiffimage.cpp b/src/tiffimage.cpp
-index 9a56fc4f..08592979 100644
+index aff87feb..65a256bc 100644
 --- a/src/tiffimage.cpp
 +++ b/src/tiffimage.cpp
 @@ -68,7 +68,7 @@ namespace Exiv2 {
@@ -1286,7 +1284,7 @@ index 9a56fc4f..08592979 100644
            pixelWidth_(0), pixelHeight_(0)
      {
      } // TiffImage::TiffImage
-@@ -299,7 +299,7 @@ namespace Exiv2 {
+@@ -302,7 +302,7 @@ namespace Exiv2 {
                       ed.end());
          }
  
@@ -1295,7 +1293,7 @@ index 9a56fc4f..08592979 100644
          return TiffParserWorker::encode(io,
                                          pData,
                                          size,
-@@ -316,7 +316,7 @@ namespace Exiv2 {
+@@ -319,7 +319,7 @@ namespace Exiv2 {
      // free functions
      Image::AutoPtr newTiffInstance(BasicIo::AutoPtr io, bool create)
      {
@@ -1361,7 +1359,7 @@ index d564f3a0..327e3acb 100644
                    uint32_t           size,
                    uint32_t           root,
 diff --git a/src/tiffvisitor_int.cpp b/src/tiffvisitor_int.cpp
-index 9c472b51..e21314d1 100644
+index 16264e56..75448d77 100644
 --- a/src/tiffvisitor_int.cpp
 +++ b/src/tiffvisitor_int.cpp
 @@ -214,7 +214,7 @@ namespace Exiv2 {
@@ -1409,16 +1407,16 @@ index 9c472b51..e21314d1 100644
              }
          }
  #ifndef SUPPRESS_WARNINGS
-@@ -1644,7 +1644,7 @@ namespace Exiv2 {
-             ::free(buffer);
-         }
+@@ -1642,7 +1642,7 @@ namespace Exiv2 {
+         enforce(v.get() != NULL, kerCorruptedMetadata);
+         v->read(pData, size, byteOrder());
  
 -        object->setValue(v);
 +        object->setValue(std::move(v));
          object->setData(pData, size);
          object->setOffset(offset);
          object->setIdx(nextIdx(object->group()));
-@@ -1742,7 +1742,7 @@ namespace Exiv2 {
+@@ -1740,7 +1740,7 @@ namespace Exiv2 {
          enforce(v.get() != NULL, kerCorruptedMetadata);
          v->read(pData, size, bo);
  
@@ -1450,7 +1448,7 @@ index 3eb9dfa7..a7bbe2ec 100644
              image.reset();
          }
 diff --git a/src/xmp.cpp b/src/xmp.cpp
-index c074914f..29bdd180 100644
+index 94a8ed44..c3892923 100644
 --- a/src/xmp.cpp
 +++ b/src/xmp.cpp
 @@ -421,7 +421,7 @@ namespace Exiv2 {

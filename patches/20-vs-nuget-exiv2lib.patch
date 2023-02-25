@@ -1,5 +1,5 @@
---- a/build/src/exiv2lib.vcxproj	2022-11-19 14:59:32.413326000 -0500
-+++ b/build/src/exiv2lib.vcxproj	2022-11-19 15:36:58.011919600 -0500
+--- a/build/src/exiv2lib.vcxproj	2023-02-20 16:10:23.489175900 -0500
++++ b/build/src/exiv2lib.vcxproj	2023-02-20 16:13:29.173423900 -0500
 @@ -1,5 +1,7 @@
  ﻿<?xml version="1.0" encoding="utf-8"?>
  <Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
@@ -8,7 +8,7 @@
    <PropertyGroup>
      <PreferredToolArchitecture>x64</PreferredToolArchitecture>
    </PropertyGroup>
-@@ -401,5 +403,16 @@
+@@ -402,5 +404,16 @@
    </ItemGroup>
    <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
    <ImportGroup Label="ExtensionTargets">

@@ -8,7 +8,7 @@
 # to restart build numbers from `1`. This is necessary because GitHub
 # maintains build numbers per workflow file name.
 #
-name: exiv2 v0.27.5-5
+name: exiv2 v0.27.6-1
 
 #
 # When `publish-package` is set to `yes`, the workflow will build
@@ -51,8 +51,8 @@ on:
 # adding or removing files, changing any text in README files, etc.
 #
 env:
-  PKG_VER: 0.27.5
-  PKG_REV: 5
+  PKG_VER: 0.27.6
+  PKG_REV: 1
   BUILD_NUMBER: ${{ github.run_number }}
 
   #
@@ -62,9 +62,9 @@ env:
   # or to define them in each step where the source directory is
   # referenced, which is what's done in this pipeline (`EXIV2_DNAME`).
   #
-  EXIV2_FNAME: exiv2-0.27.5-Source.tar.gz
-  EXIV2_DNAME: exiv2-0.27.5-Source
-  EXIV2_SHA256: 35a58618ab236a901ca4928b0ad8b31007ebdc0386d904409d825024e45ea6e2
+  EXIV2_FNAME: exiv2-0.27.6-Source.tar.gz
+  EXIV2_DNAME: exiv2-0.27.6-Source
+  EXIV2_SHA256: 4c192483a1125dc59a3d70b30d30d32edace9e14adf52802d2f853abf72db8a6
 
   # for VS Community Edition, replace `Enterprise` with `Community` in the path
   VCVARSALL: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall'

@@ -6,7 +6,7 @@
     <authors>Exiv2 authors</authors>
     <owners>Stone Steps (package)</owners>
     <license type="file">licenses\COPYING</license>
-    <projectUrl>https://github.com/Exiv2/exiv2</projectUrl>
+    <projectUrl>https://github.com/StoneStepsInc/exiv2-nuget</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Exiv2 is a C++ library to read, write, delete and modify EXIF image metadata.</description>
     <releaseNotes>

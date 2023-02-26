@@ -30,15 +30,19 @@ void printEXIF(const Exiv2::Image::AutoPtr& image)
    // Walk all tags in EXIF data and print them by tag data type, where
    // Exiv2 value interface allows.
    //
-   printf("\nEXIF Tags: IFD/tag (type, size, count):\n\n");
+   printf("\nEXIF Tags: [IFD(IfdId)/TagId] Family.Group.Tag (type, size, count): value(s)\n\n");
 
    for(Exiv2::ExifData::const_iterator i = exifData.begin(); i != exifData.end(); ++i) {
       //
       // IFD IDs are tucked away in the Internal namespace, which makes
       // it impossible to use numeric symbols in comparisons (e.g. to
       // skip the thumbnail IFD - Exiv2::Internal::IfdId::ifd1Id).
+      // 
+      // Group names are abbreviated and don't match EXIF folder names.
+      // For example, ExifIFD/MakerNoteCanon/TimeZone is reported as
+      // Exif.CanonTi.TimeZone.
       //
-      printf("[%x/%x] %s/%s (%s,%ld,%ld):", i->ifdId(), i->tag(), i->ifdName(), i->tagName().c_str(), i->typeName(), i->typeSize(), i->count());
+      printf("[%s(%x)/%x] %s.%s.%s (%s,%ld,%ld):", i->ifdName(), i->ifdId(), i->tag(), i->familyName(), i->groupName().c_str(), i->tagName().c_str(), i->typeName(), i->typeSize(), i->count());
 
       switch (i->typeId()) {
          case Exiv2::TypeId::unsignedByte:
@@ -178,10 +182,10 @@ void printXMP(const Exiv2::Image::AutoPtr& image)
       // 
       //   Xmp.xmp.Rating (XmpText,1): 5
       //
-      printf("\nXMP Tags: key (type, count):\n\n");
+      printf("\nXMP Tags: Family.Group.Tag [TagLabel] (type, count): value(s)\n\n");
 
       for(Exiv2::XmpData::const_iterator i = image->xmpData().begin(); i != image->xmpData().end(); ++i) {
-         printf("%s (%s,%d): %s\n", i->key().c_str(), i->typeName(), i->count(), i->toString().c_str());
+         printf("%s.%s.%s [%s] (%s,%d): %s\n", i->familyName(), i->groupName().c_str(), i->tagName().c_str(), i->tagLabel().c_str(), i->typeName(), i->count(), i->toString().c_str());
       }
    }
 }

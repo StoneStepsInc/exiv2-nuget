@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>StoneSteps.Exiv2.VS2022.Static</id>
-    <version>0.27.6</version>
+    <version>0.28.0</version>
     <authors>Exiv2 authors</authors>
     <owners>Stone Steps (package)</owners>
     <license type="file">licenses\COPYING</license>
@@ -12,18 +12,18 @@
     <releaseNotes>
 Package Notes:
 
-  * Static libraries for Debug/Release configurations, x64 platform
-  * Built in Visual C++ 2022, against Debug/Release MT/DLL MSVC CRT
-  * Exiv2 source code v0.27.5 has been modified to compile in C++17.
+  * Static libraries for the x64 platform
+  * Built in Visual C++ 2022, against Debug/Release dynamic multi-threaded MSVC CRT
   * Compiled with XMP and PNG support enabled.
   * Compiled with Win32 wide-character paths enabled.
+  * Static libraries in this package are not injected into static library projects
   * See README.md for more information.
 
 See Exiv2 release notes for version details:
 
-https://github.com/Exiv2/exiv2/releases/tag/v0.27.6
+https://github.com/Exiv2/exiv2/releases/tag/v0.28.0
     </releaseNotes>
-    <copyright>Copyright (C) 2004-2022 Exiv2 authors</copyright>
+    <copyright>Copyright (C) 2004-2023 Exiv2 authors</copyright>
     <tags>Exiv2,EXIF,native,library</tags>
     <dependencies>
       <!--
@@ -32,8 +32,8 @@ https://github.com/Exiv2/exiv2/releases/tag/v0.27.6
       first revision (the 4th version component) in this case, even if
       newer revisions are available.
       -->
-      <dependency id="StoneSteps.zLib.VS2022.Static" version="[1.2.13.1]"/>
-      <dependency id="StoneSteps.Expat.VS2022.Static" version="[2.5.0.2]"/>
+      <dependency id="StoneSteps.zLib.VS2022.Static" version="[1.3.0.2]"/>
+      <dependency id="StoneSteps.Expat.VS2022.Static" version="[2.5.0.3]"/>
     </dependencies>
   </metadata>
   <files>

@@ -1,9 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ItemGroup>
-    <Library Include="$(Exiv2Dir)lib\$(Platform)\$(Configuration)\$(Exiv2Name).lib" />
-    <Library Include="$(Exiv2Dir)lib\$(Platform)\$(Configuration)\$(Exiv2XMPName).lib" />
-  </ItemGroup>
+  <Choose>
+    <!-- UseDebugLibraries is described in {VS2022}\Msbuild\Microsoft\VC\v170\1033\general_advanced.xml -->
+    <When Condition="$(UseDebugLibraries)">
+      <!-- 
+      For static library projects, Visual Studio merges additional static
+      libraries, like these included here, into the target static libraries
+      for their projects. This creates bloated static libraries that are
+      hard to troubleshoot. Avoid adding packaged static libraries into
+      projects that generate their own static libraries.
+      -->
+      <ItemGroup Condition="'$(ConfigurationType)' != 'StaticLibrary'">
+        <Library Include="$(Exiv2Dir)lib\$(Platform)\Debug\$(Exiv2Name).lib" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup Condition="'$(ConfigurationType)' != 'StaticLibrary'">
+        <Library Include="$(Exiv2Dir)lib\$(Platform)\Release\$(Exiv2Name).lib" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(Exiv2Dir)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

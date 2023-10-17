@@ -4,17 +4,19 @@
 #include <cstdint>
 #include <cstdlib>
 #include <string>
+#include <format>    // C++20 (std::format)
 
 using namespace std::literals::string_literals;
+using namespace std::literals::string_view_literals;
 
-void printEXIF(const Exiv2::Image::AutoPtr& image)
+void printEXIF(const Exiv2::Image::UniquePtr& image)
 {
    const Exiv2::ExifData& exifData = image->exifData();
 
    Exiv2::ByteOrder byteOrder = image->byteOrder();
 
    //
-   // EXIF may be looked up by a tag name in Exiv2's key nomenclature.
+   // EXIF may be looked up by a tag name in Exiv2's key nomenclature (slow - walks all, until found)
    //
    const Exiv2::ExifData::const_iterator cameraMake = exifData.findKey(Exiv2::ExifKey("Exif.Image.Make"s));
 
@@ -42,7 +44,7 @@ void printEXIF(const Exiv2::Image::AutoPtr& image)
       // For example, ExifIFD/MakerNoteCanon/TimeZone is reported as
       // Exif.CanonTi.TimeZone.
       //
-      printf("[%s(%x)/%x] %s.%s.%s (%s,%ld,%ld):", i->ifdName(), i->ifdId(), i->tag(), i->familyName(), i->groupName().c_str(), i->tagName().c_str(), i->typeName(), i->typeSize(), i->count());
+      printf("[%s(%x)/%x] %s.%s.%s (%s,%zd,%zd):", i->ifdName(), i->ifdId(), i->tag(), i->familyName(), i->groupName().c_str(), i->tagName().c_str(), i->typeName(), i->typeSize(), i->count());
 
       switch (i->typeId()) {
          case Exiv2::TypeId::unsignedByte:
@@ -50,15 +52,15 @@ void printEXIF(const Exiv2::Image::AutoPtr& image)
             // This type maps to Exiv2::DataValue, which doesn't provide a good
             // interface for byte access - we either need to copy the entire
             // byte sequence into our buffer or use one of the conversion methods,
-            // like toLong.
+            // like toUint32.
             //
-            for(long c = 0; c < std::min<long>(20, i->count()); c++)
-               printf(" %02hhx", static_cast<unsigned char>(i->toLong(c)));
+            for(int64_t c = 0; c < std::min<int64_t>(20, i->count()); c++)
+               printf(" %02hhx", static_cast<unsigned char>(i->toUint32(c)));
             break;
          case Exiv2::TypeId::signedByte:
             // see Exiv2::TypeId::unsignedByte
-            for(long c = 0; c < std::min<long>(20, i->count()); c++)
-               printf(" %ld", i->toLong(c));
+            for(int64_t c = 0; c < std::min<int64_t>(20, i->count()); c++)
+               printf(" %" PRId64, i->toInt64(c));
             break;
          case Exiv2::TypeId::signedLong: {
             // all numeric types map to Exiv2::ValueType<T>, which exposes the value list as `value_`
@@ -77,9 +79,9 @@ void printEXIF(const Exiv2::Image::AutoPtr& image)
             break;
          case Exiv2::TypeId::unsignedLong:
          case Exiv2::TypeId::unsignedShort:
-            // numberic types can also be obtained via toLong, without casting
-            for(long c = 0; c < std::min<long>(20, i->count()); c++)
-               printf(" %lu", static_cast<unsigned long>(i->toLong(c)));
+            // numberic types can also be obtained via toInt64, without casting
+            for(int64_t c = 0; c < std::min<int64_t>(20, i->count()); c++)
+               printf(" %" PRId64, static_cast<int64_t>(i->toInt64(c)));
             break;
          case Exiv2::TypeId::asciiString: {
             //
@@ -127,8 +129,8 @@ void printEXIF(const Exiv2::Image::AutoPtr& image)
                // for a scene type or kilobytes for maker notes. This type is mapped
                // to DataValue.
                //
-               for(long c = 0; c < std::min<long>(20, i->count()); c++)
-                  printf(" %02hhx", static_cast<unsigned char>(i->toLong(c)));
+               for(int64_t c = 0; c < std::min<int64_t>(20, i->count()); c++)
+                  printf(" %02hhx", static_cast<unsigned char>(i->toUint32(c)));
             }
             }
             break;
@@ -164,7 +166,7 @@ void printEXIF(const Exiv2::Image::AutoPtr& image)
    }
 }
 
-void printXMP(const Exiv2::Image::AutoPtr& image)
+void printXMP(const Exiv2::Image::UniquePtr& image)
 {
    //
    // XMP may be decoded when tax 0x2bc (XMLPacket) is iterated in
@@ -185,7 +187,7 @@ void printXMP(const Exiv2::Image::AutoPtr& image)
       printf("\nXMP Tags: Family.Group.Tag [TagLabel] (type, count): value(s)\n\n");
 
       for(Exiv2::XmpData::const_iterator i = image->xmpData().begin(); i != image->xmpData().end(); ++i) {
-         printf("%s.%s.%s [%s] (%s,%d): %s\n", i->familyName(), i->groupName().c_str(), i->tagName().c_str(), i->tagLabel().c_str(), i->typeName(), i->count(), i->toString().c_str());
+         printf("%s.%s.%s [%s] (%s,%zd): %s\n", i->familyName(), i->groupName().c_str(), i->tagName().c_str(), i->tagLabel().c_str(), i->typeName(), i->count(), i->toString().c_str());
       }
    }
 }
@@ -193,7 +195,7 @@ void printXMP(const Exiv2::Image::AutoPtr& image)
 int main(int argc, const char* argv[])
 {
    if(argc != 2) {
-      printf("Usage: sample-exiv2 image-path\n");
+      fprintf(stderr, "Usage: sample-exiv2 image-path\n");
       return EXIT_FAILURE;
    }
 
@@ -201,10 +203,10 @@ int main(int argc, const char* argv[])
       Exiv2::XmpParser::initialize();
       Exiv2::enableBMFF();
 
-      Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(argv[1]);
+      Exiv2::Image::UniquePtr image = Exiv2::ImageFactory::open(argv[1]);
 
       if(!image)
-         throw std::runtime_error("Cannot open file "s + argv[1]);
+         throw std::runtime_error(std::format("Cannot open file {:s}"sv, argv[1]));
 
       image->readMetadata();
 
@@ -216,16 +218,13 @@ int main(int argc, const char* argv[])
       return EXIT_SUCCESS;
    }
    catch (const Exiv2::Error& error) {
-      printf("ERROR (exiv2): %s\n", error.what());
-   }
-   catch (const Exiv2::AnyError& error) {
-      printf("ERROR (exiv2/any): %s\n", error.what());
+      fprintf(stderr, "ERROR (exiv2): %s\n", error.what());
    }
    catch (const std::exception& error) {
-      printf("ERROR (std): %s\n", error.what());
+      fprintf(stderr, "ERROR (std): %s\n", error.what());
    }
    catch (...) {
-      printf("ERROR (unknown)\n");
+      fprintf(stderr, "ERROR (unknown)\n");
    }
 
    Exiv2::XmpParser::terminate();

@@ -1,8 +1,7 @@
 ## Exiv2 Nuget Package
 
 This project builds an Exiv2 Nuget package with static Exiv2
-libraries and header files  for the `x64` platform and `Debug`/
-`Release` configurations.
+libraries and header files  for the `x64` platform.
 
 Visit Exiv2 website for additional information about the Exiv2
 project and library documentation:
@@ -11,18 +10,29 @@ https://github.com/Exiv2/exiv2
 
 ## Package Configuration
 
-The Exiv2 static library appropriate for the platform and
-configuration selected in a Visual Studio solution is explicitly
+The Exiv2 static libraries appropriate for the platform and
+configuration selected in a Visual Studio solution are explicitly
 referenced within this package and will appear within the solution
 folder tree after the package is installed. The solution may need
-to be reloaded to make the library file visible. This library may
-be moved into any solution folder after the installation.
+to be reloaded to make the library file visible. These libraries
+may be moved into any solution folder after the installation.
 
-Note that the Exiv2 library path in this package is valid only
-for build configurations named `Debug` and `Release` and will
-not work for any other configuration names. Do not install this
-package for projects with configurations other than `Debug` and
-`Release`.
+Note that the Exiv2 library path in this package will be selected
+as `Debug` or `Release` based on whether the active configuration
+is designated as a development or as a release configuration in
+the underlying `.vcxproj` file.
+
+Specifically, the initial project configurations have a property
+called `UseDebugLibraries` in the underlying `.vcxproj` file,
+which reflects whether the configuration is intended for building
+release or development artifacts. Additional configurations copied
+from these initial ones inherit this property. Manually created
+configurations should have this property defined in the `.vcxproj`
+file.
+
+Do not install this package if your projects use debug configurations
+without `UseDebugLibraries`. Note that CMake-generated Visual Studio
+projects will not emit this property.
 
 CMake is configured to build Exiv2 with the following feature
 options:
@@ -30,9 +40,15 @@ options:
   * `BUILD_SHARED_LIBS=OFF`
   * `EXIV2_ENABLE_WEBREADY=OFF`
   * `EXIV2_ENABLE_CURL=OFF`
-  * `EXIV2_ENABLE_SSH=OFF`
-  * `EXIV2_BUILD_EXIV2_COMMAND=OFF`
+  * `EXIV2_ENABLE_BROTLI=OFF`
+  * `EXIV2_ENABLE_INIH=OFF`
+  * `EXIV2_ENABLE_VIDEO=ON`
   * `EXIV2_ENABLE_XMP=ON`
+  * `EXIV2_ENABLE_SSH=OFF`
+  * `EXIV2_BUILD_SAMPLES=OFF`
+  * `EXIV2_BUILD_EXIV2_COMMAND=OFF`
+  * `EXIV2_BUILD_UNIT_TESTS=OFF`
+  * `EXIV2_BUILD_FUZZ_TESTS=OFF`
   * `EXIV2_ENABLE_PNG=ON`
   * `EXIV2_ENABLE_WIN_UNICODE=ON`
 
@@ -47,30 +63,28 @@ Exiv2 source that was used to create this package contains a few
 changes applied in patches described in this section against the
 Exiv2 release indicated in the package version.
 
-### `01-auto-ptr.patch`
-
-This patch replaces `std::auto_ptr` with `std::unique_ptr`, so
-the source compiles in C\+\+17.
-
-There is similar work done in the trunk of the Exiv2 project,
-which will be available at some point and will require projects
-consuming Exiv2 updated to use the new pointer type name.
-
-In this patch, however, the type `Exiv2::AutoPtr` was kept
-intact to minimize the size of the patch and allow projects
-consuming this package to continue using `Exiv2::AutoPtr`.
-
-Note that the underlying type behind `Exiv2::AutoPtr` is now
-`std::unique_ptr` and projects expecting `std::auto_ptr` need
-to be updated to implement move semantics against pointers
-obtained from Exiv2. Do not use this package if your project
-requires specifically `std::auto_ptr` to work properly.
-
 ### `02-cmake-lists.patch`
 
 This patch adds a definition `SUPPRESS_WARNINGS` to disable
 Exiv2 warnings reported to one of the standard streams while
 reading EXIF.
+
+All optimizations in debug builds have been disabled (Exiv2
+enables `/Ox` and `/Zo).
+
+Exiv2 forces statically linked MSVC CRT (`/MTd`) for static
+library builds. This is changed to use dynamic MSVC CRT at
+all times to make sure memory managers are never mixed up
+in applications built against Exiv2 static libraries.
+
+Exiv2 disables all forms of inlining by removing `/Ob2` and
+`/Ob1` from CMake-generated projects. This behavior is
+disabled because inlining provides good performance benefits
+and does not cause problems when includes and libraries are
+properly set up.
+
+Release configurations have been changed to generate PDB files
+to aid debugging of released builds (e.g. crash dumps).
 
 ### `03-cmake-find-zlib-expat.patch`
 
@@ -106,10 +120,8 @@ Add `goto :EOF` in `make-package.bat` after CMake generates
 Visual Studio projects. Run this batch file from the project
 root to generate Visual Studio projects.
 
-Copy the generated `build` directory in the Exiv2 source tree
-as the base installation to run `diff` against later. For the
-purposes of this section `build_base` will be used to reference
-this copy.
+Copy the generated `exiv2-0.28.0-Source` directory as the base
+installation to run `diff` against later (e.g. `exiv2-0.28.0-Source_base`).
 
 Change to the Exiv2 source directory and run this command to
 start VS2022 with the generated `exiv2.sln` file.
@@ -132,29 +144,14 @@ remaining dependencies.
     Install-Package StoneSteps.Expat.VS2022.Static -ProjectName exiv2-xmp
 
 These commands modify `.vcxproj` files to add build instructions
-from installed packages, as well as references to `packages.config`,
-which need to be removed because they will cause patches to pick
-up lines with absolute file paths CMake outputs when it generates
-`.vcxproj` files, and these lines will fail patches when they are
-applied on build machines with different build paths.
-
-Open `src\exiv2lib.vcxproj` and `src\exiv2lib_int.vcxproj` in a text
-editor and delete the following group of lines in each.
-
-    <ItemGroup>
-        <None Include="packages.config" />
-    </ItemGroup>
-
-Delete this line in `xmpsdk\exiv2-xmp.vcxproj`.
-
-    <None Include="packages.config" />
+from installed packages, as well as references to `packages.config`.
 
 Generate patches for all three `.vcxproj` files in the same
 way using the base installation directory saved earlier.
 
-    "%PROGRAMFILES%\Git\usr\bin\diff" --unified --strip-trailing-cr ^
-        build_base\src\exiv2lib.vcxproj ^
-        build\src\exiv2lib.vcxproj > ..\patches\20-vs-nuget-exiv2lib.patch
+    devops\create-vs-nuget-patches ^
+        exiv2-0.28.0-Source_base ^
+        exiv2-0.28.0-Source
 
 Note that `.vcxproj` files are expected to use CRLF line endings,
 but `patch` gets confused when it finds mixed line endings and

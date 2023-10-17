@@ -1,15 +1,17 @@
+diff --git a/cmake/findDependencies.cmake b/cmake/findDependencies.cmake
+index 1075c3031..33849b724 100644
 --- a/cmake/findDependencies.cmake
 +++ b/cmake/findDependencies.cmake
-@@ -22,7 +22,7 @@ find_package (Python3 COMPONENTS Interpreter)
- find_package(Threads REQUIRED)
+@@ -43,7 +43,7 @@ if (APPLE)
+ endif()
  
  if( EXIV2_ENABLE_PNG )
 -    find_package( ZLIB REQUIRED )
 +    #find_package( ZLIB REQUIRED )
  endif( )
  
- if( EXIV2_ENABLE_WEBREADY )
-@@ -48,7 +48,7 @@ if (EXIV2_ENABLE_XMP AND EXIV2_ENABLE_EXTERNAL_XMP)
+ if( EXIV2_ENABLE_BMFF AND EXIV2_ENABLE_BROTLI )
+@@ -60,7 +60,7 @@ if (EXIV2_ENABLE_XMP AND EXIV2_ENABLE_EXTERNAL_XMP)
      message(FATAL_ERROR "EXIV2_ENABLE_XMP AND EXIV2_ENABLE_EXTERNAL_XMP are mutually exclusive.  You can only choose one of them")
  else()
      if (EXIV2_ENABLE_XMP)
@@ -19,23 +21,23 @@
          find_package(XmpSdk REQUIRED)
      endif ()
 diff --git a/cmake/generateConfigFile.cmake b/cmake/generateConfigFile.cmake
-index 0179eb5d..6207a760 100644
+index 49c9a10f6..5717fb898 100644
 --- a/cmake/generateConfigFile.cmake
 +++ b/cmake/generateConfigFile.cmake
-@@ -22,7 +22,7 @@ else()
+@@ -20,7 +20,7 @@ else()
      set(EXV_HAVE_XMP_TOOLKIT OFF)
  endif()
  set(EXV_HAVE_ICONV       ${ICONV_FOUND})
 -set(EXV_HAVE_LIBZ        ${ZLIB_FOUND})
 +set(EXV_HAVE_LIBZ        TRUE)
- set(EXV_UNICODE_PATH     ${EXIV2_ENABLE_WIN_UNICODE})
+ set(EXV_HAVE_BROTLI      ${BROTLI_FOUND})
  
- check_cxx_symbol_exists(gmtime_r    time.h         EXV_HAVE_GMTIME_R)
+ check_cxx_symbol_exists(strerror_r  string.h       EXV_HAVE_STRERROR_R )
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index de874f52..34b0fc37 100644
+index 180534d76..2c4afeeeb 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
-@@ -152,14 +152,14 @@ set_target_properties( exiv2lib_int PROPERTIES
+@@ -179,15 +179,15 @@ set_target_properties( exiv2lib_int PROPERTIES
  )
  
  # NOTE: Cannot use target_link_libraries on OBJECT libraries with old versions of CMake
@@ -47,32 +49,36 @@ index de874f52..34b0fc37 100644
  
  if (EXIV2_ENABLE_XMP OR EXIV2_ENABLE_EXTERNAL_XMP)
 -    target_include_directories(exiv2lib PRIVATE ${EXPAT_INCLUDE_DIR})
--    target_link_libraries(exiv2lib PRIVATE ${EXPAT_LIBRARIES})
+-    target_link_libraries(exiv2lib PRIVATE EXPAT::EXPAT)
+-    list(APPEND requires_private_list "expat")
 +    #target_include_directories(exiv2lib PRIVATE ${EXPAT_INCLUDE_DIR})
-+    #target_link_libraries(exiv2lib PRIVATE ${EXPAT_LIBRARIES})
++    #target_link_libraries(exiv2lib PRIVATE EXPAT::EXPAT)
++    #list(APPEND requires_private_list "expat")
+ endif()
  
-     if (WIN32)
-         target_compile_definitions(exiv2lib PRIVATE XML_STATIC)
-@@ -228,7 +228,7 @@ else()
+ if (EXIV2_ENABLE_XMP)
+@@ -238,8 +238,8 @@ else()
  endif()
  
  if( EXIV2_ENABLE_PNG )
--	target_link_libraries( exiv2lib PRIVATE ZLIB::ZLIB)
-+	#target_link_libraries( exiv2lib PRIVATE ZLIB::ZLIB)
+-    target_link_libraries( exiv2lib PRIVATE ZLIB::ZLIB)
+-    list(APPEND requires_private_list "zlib")
++    #target_link_libraries( exiv2lib PRIVATE ZLIB::ZLIB)
++    #list(APPEND requires_private_list "zlib")
  endif()
  
- if( EXIV2_ENABLE_NLS )
+ if( EXIV2_ENABLE_BMFF AND BROTLI_FOUND )
 diff --git a/xmpsdk/CMakeLists.txt b/xmpsdk/CMakeLists.txt
-index a22698fb..7a2097f6 100644
+index 9c148a617..43f166bb1 100644
 --- a/xmpsdk/CMakeLists.txt
 +++ b/xmpsdk/CMakeLists.txt
-@@ -26,15 +26,19 @@ add_library(exiv2-xmp STATIC
+@@ -26,10 +26,14 @@ add_library(exiv2-xmp OBJECT
      include/XMP_Version.h
  )
  
 -target_link_libraries(exiv2-xmp
 -    PRIVATE 
--        $<BUILD_INTERFACE:${EXPAT_LIBRARY}>
+-    EXPAT::EXPAT
 -)
 +#
 +# EXPAT_LIBRARY is set by CMake via find_package, which is
@@ -80,14 +86,8 @@ index a22698fb..7a2097f6 100644
 +#
 +#target_link_libraries(exiv2-xmp
 +#    PRIVATE 
-+#        $<BUILD_INTERFACE:${EXPAT_LIBRARY}>
++#    EXPAT::EXPAT
 +#)
  
- target_include_directories(exiv2-xmp
+ target_include_directories(exiv2-xmp SYSTEM
      PRIVATE 
-         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/xmpsdk/include>
--        ${EXPAT_INCLUDE_DIR}
-+        #${EXPAT_INCLUDE_DIR}
- )
- 
- # Prevent a denial-service-attack related to XML entity expansion

@@ -50,7 +50,6 @@ options:
   * `EXIV2_BUILD_UNIT_TESTS=OFF`
   * `EXIV2_BUILD_FUZZ_TESTS=OFF`
   * `EXIV2_ENABLE_PNG=ON`
-  * `EXIV2_ENABLE_WIN_UNICODE=ON`
 
 You may need to copy PDB files from package dependencies to the
 output directory in order to avoid linker warnings reporting for
@@ -62,6 +61,22 @@ Events_ in the sample project for an example.
 Exiv2 source that was used to create this package contains a few
 changes applied in patches described in this section against the
 Exiv2 release indicated in the package version.
+
+### `01-wide-char-paths.patch`
+
+Exiv2 dropped support for wide-character paths in v0.28.0 and
+did not provide any alternative ways to open file paths with
+characters outside of the currently selected Windows character
+set, such as Win-1252. Their intent appears to rely on Windows
+replacing various locale code pages with the UTF-8 code page,
+but support for this solution is limited at this point.
+
+The Exiv2 source in this package is patched to restore limited
+file-only support for opening images with names comprised of
+valid Unicode characters (i.e. will not work with URLs).
+
+Use methods that take `std::filesystem:path` to open images
+via the wide-character file interfaces.
 
 ### `02-cmake-lists.patch`
 
@@ -95,6 +110,20 @@ be injected as Nuget packages during the build process.
 Current version of Nuget does not provide support for updating
 `.vcxproj` files via command line tools, which limits CMake in
 being able to handle Nuget packages gracefully.
+
+## Migrating from 0.27.6
+
+There are many breaking changes in Exiv2 v0.28.0, compared to
+v0.27.6. Some of the most notable ones are listed below.
+
+  * `Exiv2::Image::AutoPtr` has been replaced with
+    `Exiv2::Image::UniquePtr`.
+  * The ubiquitous `toLong()` methods has been replaced with
+    `toInt64()` for signed integers and with `toUint32() for
+    unsigned integers.
+  * `Exiv2::AnyError` has been removed.
+  * Native support for wide-character paths has been removed
+    (see the `01-wide-char-paths.patch` section above, however).
 
 ### Nuget dependencies patches
 

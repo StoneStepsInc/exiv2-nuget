@@ -119,7 +119,7 @@ v0.27.6. Some of the most notable ones are listed below.
   * `Exiv2::Image::AutoPtr` has been replaced with
     `Exiv2::Image::UniquePtr`.
   * The ubiquitous `toLong()` methods has been replaced with
-    `toInt64()` for signed integers and with `toUint32() for
+    `toInt64()` for signed integers and with `toUint32()` for
     unsigned integers.
   * `Exiv2::AnyError` has been removed.
   * Native support for wide-character paths has been removed

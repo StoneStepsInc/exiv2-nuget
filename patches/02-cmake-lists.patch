@@ -1,5 +1,5 @@
 diff --git a/cmake/compilerFlags.cmake b/cmake/compilerFlags.cmake
-index dc82f2bcb..704f26508 100644
+index dc82f2bcb..c1ea3009a 100644
 --- a/cmake/compilerFlags.cmake
 +++ b/cmake/compilerFlags.cmake
 @@ -133,7 +133,12 @@ if(MSVC)

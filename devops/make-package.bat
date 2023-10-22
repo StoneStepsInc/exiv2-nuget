@@ -38,6 +38,7 @@ rem Patch the source to work around build problems described for
 rem each patch in README.md.
 rem
 
+"%PATCH%" -p1 --unified --input ..\patches\01-wide-char-paths.patch
 "%PATCH%" -p1 --unified --input ..\patches\02-cmake-lists.patch
 "%PATCH%" -p1 --unified --input ..\patches\03-cmake-find-zlib-expat.patch
 
@@ -61,8 +62,7 @@ cmake -S . -B build -G "Visual Studio 17 2022" -A x64 ^
     -DEXIV2_BUILD_EXIV2_COMMAND=OFF ^
     -DEXIV2_BUILD_UNIT_TESTS=OFF ^
     -DEXIV2_BUILD_FUZZ_TESTS=OFF ^
-    -DEXIV2_ENABLE_PNG=ON ^
-    -DEXIV2_ENABLE_WIN_UNICODE=ON
+    -DEXIV2_ENABLE_PNG=ON
 
 rem
 rem See README.md for more information about these patches.

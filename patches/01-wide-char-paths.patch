@@ -1,0 +1,508 @@
+diff --git a/include/exiv2/basicio.hpp b/include/exiv2/basicio.hpp
+index 179220464..fbc5581ef 100644
+--- a/include/exiv2/basicio.hpp
++++ b/include/exiv2/basicio.hpp
+@@ -13,12 +13,26 @@
+ // + standard includes
+ #include <memory>
+ 
++#if __has_include(<filesystem>)
++#include <filesystem>
++namespace fs = std::filesystem;
++#else
++#include <experimental/filesystem>
++namespace fs = std::experimental::filesystem;
++#endif
++
+ // The way to handle data from stdin or data uri path. If EXV_XPATH_MEMIO = 1,
+ // it uses MemIo. Otherwises, it uses FileIo.
+ #ifndef EXV_XPATH_MEMIO
+ #define EXV_XPATH_MEMIO 0
+ #endif
+ 
++//
++// Creates an initializer list with all representations of a string
++// literal we need in this implementation.
++//
++#define STRLIT(str) {str, L ## str}
++
+ // *****************************************************************************
+ // namespace extensions
+ namespace Exiv2 {
+@@ -218,7 +232,7 @@ class EXIV2API BasicIo {
+         comprehensive error messages where only a BasicIo instance is
+         available.
+    */
+-  [[nodiscard]] virtual const std::string& path() const noexcept = 0;
++  [[nodiscard]] virtual std::string path() const noexcept = 0;
+ 
+   /*!
+     @brief Mark all the bNone blocks to bKnow. This avoids allocating memory
+@@ -290,7 +304,7 @@ class EXIV2API FileIo : public BasicIo {
+         therefore never fails.
+     @param path The full path of a file
+    */
+-  explicit FileIo(const std::string& path);
++  explicit FileIo(const fs::path& path);
+ 
+   //! Destructor. Flushes and closes an open file.
+   ~FileIo() override;
+@@ -311,7 +325,7 @@ class EXIV2API FileIo : public BasicIo {
+     @return 0 if successful;<BR>
+         Nonzero if failure.
+    */
+-  int open(const std::string& mode);
++  int open(const std::tuple<std::string, std::wstring>& mode);
+   /*!
+     @brief Open the file using the default access mode of "rb".
+         This method can also be used to "reopen" a file which will flush
+@@ -454,8 +468,15 @@ class EXIV2API FileIo : public BasicIo {
+   [[nodiscard]] int error() const override;
+   //! Returns true if the file position has reached the end, otherwise false.
+   [[nodiscard]] bool eof() const override;
++
++  //
++  // Must not be used to create FileIo instances (i.e. outer
++  // instance in FileIo(FileIo(some_path).path()) may be different
++  // from the inner one because of different character encoding of
++  //  std::filesystem::path and what path() returns).
++  //
+   //! Returns the path of the file
+-  [[nodiscard]] const std::string& path() const noexcept override;
++  [[nodiscard]] std::string path() const noexcept override;
+ 
+   /*!
+     @brief Mark all the bNone blocks to bKnow. This avoids allocating memory
+@@ -636,7 +657,7 @@ class EXIV2API MemIo : public BasicIo {
+   //! Returns true if the IO position has reached the end, otherwise false.
+   [[nodiscard]] bool eof() const override;
+   //! Returns a dummy path, indicating that memory access is used
+-  [[nodiscard]] const std::string& path() const noexcept override;
++  [[nodiscard]] std::string path() const noexcept override;
+ 
+   /*!
+     @brief Mark all the bNone blocks to bKnow. This avoids allocating memory
+@@ -886,7 +907,7 @@ class EXIV2API RemoteIo : public BasicIo {
+   //! Returns true if the IO position has reached the end, otherwise false.
+   [[nodiscard]] bool eof() const override;
+   //! Returns the URL of the file.
+-  [[nodiscard]] const std::string& path() const noexcept override;
++  [[nodiscard]] std::string path() const noexcept override;
+ 
+   /*!
+     @brief Mark all the bNone blocks to bKnow. This avoids allocating memory
+@@ -976,13 +997,13 @@ class EXIV2API CurlIo : public RemoteIo {
+   @return Buffer containing the file.
+   @throw Error In case of failure.
+  */
+-EXIV2API DataBuf readFile(const std::string& path);
++EXIV2API DataBuf readFile(const fs::path& path);
+ /*!
+   @brief Write DataBuf \em buf to file \em path.
+   @return Return the number of bytes written.
+   @throw Error In case of failure.
+  */
+-EXIV2API size_t writeFile(const DataBuf& buf, const std::string& path);
++EXIV2API size_t writeFile(const DataBuf& buf, const fs::path& path);
+ #ifdef EXV_USE_CURL
+ /*!
+   @brief The callback function is called by libcurl to write the data
+diff --git a/include/exiv2/image.hpp b/include/exiv2/image.hpp
+index 66f14870c..3f1367539 100644
+--- a/include/exiv2/image.hpp
++++ b/include/exiv2/image.hpp
+@@ -523,6 +523,11 @@ class EXIV2API ImageFactory {
+    */
+   static BasicIo::UniquePtr createIo(const std::string& path, bool useCurl = true);
+ 
++  //
++  // Creates a FileIo instance for the specified file system path.
++  //
++  static BasicIo::UniquePtr createIo(const fs::path& path);
++
+   /*!
+     @brief Create an Image subclass of the appropriate type by reading
+         the specified file. %Image type is derived from the file
+@@ -538,6 +543,12 @@ class EXIV2API ImageFactory {
+    */
+   static Image::UniquePtr open(const std::string& path, bool useCurl = true);
+ 
++  //
++  // Creates an Image instance for the image pointed to by the
++  // specified file system path.
++  //
++  static Image::UniquePtr open(const fs::path& path);
++
+   /*!
+     @brief Create an Image subclass of the appropriate type by reading
+         the provided memory. %Image type is derived from the memory
+@@ -577,7 +588,7 @@ class EXIV2API ImageFactory {
+         type.
+     @throw Error If the image type is not supported.
+    */
+-  static Image::UniquePtr create(ImageType type, const std::string& path);
++  static Image::UniquePtr create(ImageType type, const fs::path& path);
+   /*!
+     @brief Create an Image subclass of the requested type by creating a
+         new image in memory.
+diff --git a/src/basicio.cpp b/src/basicio.cpp
+index 9ab953a32..815216e8c 100644
+--- a/src/basicio.cpp
++++ b/src/basicio.cpp
+@@ -79,14 +79,14 @@ void BasicIo::seekOrThrow(int64_t offset, Position pos, ErrorCode err) {
+ class FileIo::Impl {
+  public:
+   //! Constructor
+-  explicit Impl(std::string path);
++  explicit Impl(const fs::path& path);
+   ~Impl() = default;
+   // Enumerations
+   //! Mode of operation
+   enum OpMode { opRead, opWrite, opSeek };
+   // DATA
+-  std::string path_;       //!< (Standard) path
+-  std::string openMode_;   //!< File open mode
++  fs::path path_;       //!< (Standard) path
++  std::tuple<std::string, std::wstring> openMode_;   //!< File open mode
+   FILE* fp_{};             //!< File stream pointer
+   OpMode opMode_{opSeek};  //!< File open mode
+ 
+@@ -106,6 +106,8 @@ class FileIo::Impl {
+   };
+   // #endif
+   // METHODS
++  FILE *open(const std::tuple<std::string, std::wstring>& mode);
++
+   /*!
+     @brief Switch to a new access mode, reopening the file if needed.
+         Optimized to only reopen the file when it is really necessary.
+@@ -120,7 +122,16 @@ class FileIo::Impl {
+   Impl& operator=(const Impl&) = delete;  //!< Assignment
+ };
+ 
+-FileIo::Impl::Impl(std::string path) : path_(std::move(path)) {
++FileIo::Impl::Impl(const fs::path& path) : path_(path) {
++}
++
++FILE *FileIo::Impl::open(const std::tuple<std::string, std::wstring>& mode)
++{
++#if _WIN32
++   return _wfopen(path_.wstring().c_str(), std::get<std::wstring>(mode).c_str());
++#else
++   return std::fopen(path_.string().c_str(), std::get<std::string>(mode).c_str());
++#endif
+ }
+ 
+ int FileIo::Impl::switchMode(OpMode opMode) {
+@@ -134,12 +145,12 @@ int FileIo::Impl::switchMode(OpMode opMode) {
+     case opRead:
+       // Flush if current mode allows reading, else reopen (in mode "r+b"
+       // as in this case we know that we can write to the file)
+-      if (openMode_.at(0) == 'r' || openMode_.at(1) == '+')
++      if (std::get<std::string>(openMode_).at(0) == 'r' || std::get<std::string>(openMode_).at(1) == '+')
+         reopen = false;
+       break;
+     case opWrite:
+       // Flush if current mode allows writing, else reopen
+-      if (openMode_.at(0) != 'r' || openMode_.at(1) == '+')
++      if (std::get<std::string>(openMode_).at(0) != 'r' || std::get<std::string>(openMode_).at(1) == '+')
+         reopen = false;
+       break;
+     case opSeek:
+@@ -171,9 +182,9 @@ int FileIo::Impl::switchMode(OpMode opMode) {
+     std::fclose(fp_);
+     fp_ = nullptr;
+   }
+-  openMode_ = "r+b";
++  openMode_ = STRLIT("r+b");
+   opMode_ = opSeek;
+-  fp_ = std::fopen(path_.c_str(), openMode_.c_str());
++  fp_ = open(openMode_);
+   if (!fp_)
+     return 1;
+ #ifdef _WIN32
+@@ -184,8 +195,13 @@ int FileIo::Impl::switchMode(OpMode opMode) {
+ }  // FileIo::Impl::switchMode
+ 
+ int FileIo::Impl::stat(StructStat& buf) const {
++#ifdef _WIN32
++  struct _stat st;
++  int ret = ::_wstat(path_.wstring().c_str(), &st);
++#else
+   struct stat st;
+-  auto ret = ::stat(path_.c_str(), &st);
++  auto ret = ::stat(path_.string().c_str(), &st);
++#endif
+   if (ret == 0) {
+     buf.st_size = st.st_size;
+     buf.st_mode = st.st_mode;
+@@ -193,7 +209,7 @@ int FileIo::Impl::stat(StructStat& buf) const {
+   return ret;
+ }  // FileIo::Impl::stat
+ 
+-FileIo::FileIo(const std::string& path) : p_(std::make_unique<Impl>(path)) {
++FileIo::FileIo(const fs::path& path) : p_(std::make_unique<Impl>(path)) {
+ }
+ 
+ FileIo::~FileIo() {
+@@ -345,13 +361,13 @@ size_t FileIo::write(BasicIo& src) {
+ 
+ void FileIo::transfer(BasicIo& src) {
+   const bool wasOpen = (p_->fp_ != nullptr);
+-  const std::string lastMode(p_->openMode_);
++  const std::tuple<std::string, std::wstring> lastMode(p_->openMode_);
+ 
+   if (auto fileIo = dynamic_cast<FileIo*>(&src)) {
+     // Optimization if src is another instance of FileIo
+     fileIo->close();
+     // Check if the file can be written to, if it already exists
+-    if (open("a+b") != 0) {
++    if (open(STRLIT("a+b")) != 0) {
+       // Remove the (temporary) file
+       fs::remove(fileIo->path());
+       throw Error(ErrorCode::kerFileOpenFailed, path(), "a+b", strError());
+@@ -360,7 +376,6 @@ void FileIo::transfer(BasicIo& src) {
+ 
+     bool statOk = true;
+     mode_t origStMode = 0;
+-    auto pf = path().c_str();
+ 
+     Impl::StructStat buf1;
+     if (p_->stat(buf1) == -1) {
+@@ -375,55 +390,59 @@ void FileIo::transfer(BasicIo& src) {
+       // that file has been opened with FILE_SHARE_DELETE by another process,
+       // like a virus scanner or disk indexer
+       // (see also http://stackoverflow.com/a/11023068)
+-      using ReplaceFileA_t = BOOL(WINAPI*)(LPCSTR, LPCSTR, LPCSTR, DWORD, LPVOID, LPVOID);
++      using ReplaceFileW_t = BOOL(WINAPI*)(LPCWSTR, LPCWSTR, LPCWSTR, DWORD, LPVOID, LPVOID);
+       HMODULE hKernel = ::GetModuleHandleA("kernel32.dll");
+       if (hKernel) {
+-        auto pfcn_ReplaceFileA = reinterpret_cast<ReplaceFileA_t>(GetProcAddress(hKernel, "ReplaceFileA"));
+-        if (pfcn_ReplaceFileA) {
++        auto pfcn_ReplaceFileW = reinterpret_cast<ReplaceFileW_t>(GetProcAddress(hKernel, "ReplaceFileW"));
++        if (pfcn_ReplaceFileW) {
+           BOOL ret =
+-              pfcn_ReplaceFileA(pf, fileIo->path().c_str(), nullptr, REPLACEFILE_IGNORE_MERGE_ERRORS, nullptr, nullptr);
++              pfcn_ReplaceFileW(p_->path_.wstring().c_str(), fileIo->p_->path_.wstring().c_str(), nullptr, REPLACEFILE_IGNORE_MERGE_ERRORS, nullptr, nullptr);
+           if (ret == 0) {
+             if (GetLastError() == ERROR_FILE_NOT_FOUND) {
+-              fs::rename(fileIo->path(), pf);
+-              fs::remove(fileIo->path());
++              fs::rename(fileIo->p_->path_, p_->path_);
++              fs::remove(fileIo->p_->path_);
+             } else {
+-              throw Error(ErrorCode::kerFileRenameFailed, fileIo->path(), pf, strError());
++              throw Error(ErrorCode::kerFileRenameFailed, fileIo->path(), path().c_str(), strError());
+             }
+           }
+         } else {
+-          if (fileExists(pf) && ::remove(pf) != 0) {
+-            throw Error(ErrorCode::kerCallFailed, pf, strError(), "fs::remove");
++          if (fs::exists(p_->path_) && ::_wremove(p_->path_.wstring().c_str()) != 0) {
++            throw Error(ErrorCode::kerCallFailed, path().c_str(), strError(), "fs::remove");
+           }
+-          fs::rename(fileIo->path(), pf);
+-          fs::remove(fileIo->path());
++          fs::rename(fileIo->p_->path_, p_->path_);
++          fs::remove(fileIo->p_->path_);
+         }
+       }
+ #else
+-      if (fileExists(pf) && fs::remove(pf) != 0) {
++      if (fileExists(p_->path_.string()) && fs::remove(p_->path_) != 0) {
+         throw Error(ErrorCode::kerCallFailed, pf, strError(), "fs::remove");
+       }
+-      fs::rename(fileIo->path(), pf);
+-      fs::remove(fileIo->path());
++      fs::rename(fileIo->p_->path_, p_->path_);
++      fs::remove(fileIo->p_->path_);
+ #endif
++
++#ifndef _WIN32
+       // Check permissions of new file
+       struct stat buf2;
+-      if (statOk && ::stat(pf, &buf2) == -1) {
++      if (statOk && ::stat(p_->path_.string().c_str(), &buf2) == -1) {
++
+         statOk = false;
+ #ifndef SUPPRESS_WARNINGS
+         EXV_WARNING << Error(ErrorCode::kerCallFailed, pf, strError(), "::stat") << "\n";
+ #endif
+       }
+       // Set original file permissions
+-      if (statOk && origStMode != buf2.st_mode && ::chmod(pf, origStMode) == -1) {
++      if (statOk && origStMode != buf2.st_mode && ::chmod(p_->path_.string().c_str(), origStMode) == -1) {
+ #ifndef SUPPRESS_WARNINGS
+         EXV_WARNING << Error(ErrorCode::kerCallFailed, pf, strError(), "::chmod") << "\n";
+ #endif
+       }
++#endif
+     }
+   }  // if (fileIo)
+   else {
+     // Generic handling, reopen both to reset to start
+-    if (open("w+b") != 0) {
++    if (open(STRLIT("w+b")) != 0) {
+       throw Error(ErrorCode::kerFileOpenFailed, path(), "w+b", strError());
+     }
+     if (src.open() != 0) {
+@@ -435,7 +454,7 @@ void FileIo::transfer(BasicIo& src) {
+ 
+   if (wasOpen) {
+     if (open(lastMode) != 0) {
+-      throw Error(ErrorCode::kerFileOpenFailed, path(), lastMode, strError());
++      throw Error(ErrorCode::kerFileOpenFailed, path(), std::get<std::string>(lastMode), strError());
+     }
+   } else
+     close();
+@@ -486,7 +505,7 @@ size_t FileIo::tell() const {
+ 
+ size_t FileIo::size() const {
+   // Flush and commit only if the file is open for writing
+-  if (p_->fp_ && (p_->openMode_.at(0) != 'r' || p_->openMode_.at(1) == '+')) {
++  if (p_->fp_ && (std::get<std::string>(p_->openMode_).at(0) != 'r' || std::get<std::string>(p_->openMode_).at(1) == '+')) {
+     std::fflush(p_->fp_);
+ #ifdef _MSC_VER
+     // This is required on msvcrt before stat after writing to a file
+@@ -502,14 +521,14 @@ size_t FileIo::size() const {
+ 
+ int FileIo::open() {
+   // Default open is in read-only binary mode
+-  return open("rb");
++  return open(STRLIT("rb"));
+ }
+ 
+-int FileIo::open(const std::string& mode) {
++int FileIo::open(const std::tuple<std::string, std::wstring>& mode) {
+   close();
+   p_->openMode_ = mode;
+   p_->opMode_ = Impl::opSeek;
+-  p_->fp_ = ::fopen(path().c_str(), mode.c_str());
++  p_->fp_ = p_->open(mode);
+   if (!p_->fp_)
+     return 1;
+   return 0;
+@@ -564,8 +583,17 @@ bool FileIo::eof() const {
+   return std::feof(p_->fp_) != 0;
+ }
+ 
+-const std::string& FileIo::path() const noexcept {
+-  return p_->path_;
++std::string FileIo::path() const noexcept {
++  //
++  // Returning std::string will throw exceptions for paths
++  // with characters that cannot be converted to the character
++  // set of std::string (e.g. an emoji in a Windows path will
++  // do that). Call path::u8string() instead, which will cover
++  // all characters, but will break in C++20 because it will
++  // return an instance of std::u8string, which cannot be
++  // assigned to std::string.
++  //
++  return p_->path_.u8string();
+ }
+ 
+ void FileIo::populateFakeData() {
+@@ -864,7 +892,7 @@ bool MemIo::eof() const {
+   return p_->eof_;
+ }
+ 
+-const std::string& MemIo::path() const noexcept {
++std::string MemIo::path() const noexcept {
+   static std::string _path{"MemIo"};
+   return _path;
+ }
+@@ -1373,7 +1401,7 @@ bool RemoteIo::eof() const {
+   return p_->eof_;
+ }
+ 
+-const std::string& RemoteIo::path() const noexcept {
++std::string RemoteIo::path() const noexcept {
+   return p_->path_;
+ }
+ 
+@@ -1727,26 +1755,32 @@ CurlIo::CurlIo(const std::string& url, size_t blockSize) {
+ // *************************************************************************
+ // free functions
+ 
+-DataBuf readFile(const std::string& path) {
++DataBuf readFile(const fs::path& path) {
+   FileIo file(path);
+-  if (file.open("rb") != 0) {
+-    throw Error(ErrorCode::kerFileOpenFailed, path, "rb", strError());
++  if (file.open(STRLIT("rb")) != 0) {
++    throw Error(ErrorCode::kerFileOpenFailed, file.path(), "rb", strError());
+   }
++#ifdef _WIN32
++  struct _stat st;
++  if(::_wstat(path.wstring().c_str(), &st) != 0)
++    throw Error(ErrorCode::kerCallFailed, file.path(), strError(), "::_wstat");
++#else
+   struct stat st;
+-  if (0 != ::stat(path.c_str(), &st)) {
+-    throw Error(ErrorCode::kerCallFailed, path, strError(), "::stat");
++  if (0 != ::stat(path.string().c_str(), &st)) {
++    throw Error(ErrorCode::kerCallFailed, file.path(), strError(), "::stat");
+   }
++#endif
+   DataBuf buf(st.st_size);
+   if (file.read(buf.data(), buf.size()) != buf.size()) {
+-    throw Error(ErrorCode::kerCallFailed, path, strError(), "FileIo::read");
++    throw Error(ErrorCode::kerCallFailed, file.path(), strError(), "FileIo::read");
+   }
+   return buf;
+ }
+ 
+-size_t writeFile(const DataBuf& buf, const std::string& path) {
++size_t writeFile(const DataBuf& buf, const fs::path& path) {
+   FileIo file(path);
+-  if (file.open("wb") != 0) {
+-    throw Error(ErrorCode::kerFileOpenFailed, path, "wb", strError());
++  if (file.open(STRLIT("wb")) != 0) {
++    throw Error(ErrorCode::kerFileOpenFailed, file.path(), "wb", strError());
+   }
+   return file.write(buf.c_data(), buf.size());
+ }
+diff --git a/src/image.cpp b/src/image.cpp
+index 05d8345f9..6e528715e 100644
+--- a/src/image.cpp
++++ b/src/image.cpp
+@@ -791,10 +791,23 @@ BasicIo::UniquePtr ImageFactory::createIo(const std::string& path, bool useCurl)
+   (void)(useCurl);
+ }  // ImageFactory::createIo
+ 
++BasicIo::UniquePtr ImageFactory::createIo(const fs::path& path)
++{
++   // file system paths can only used in FileIo
++   return std::make_unique<FileIo>(path);
++}
++
+ Image::UniquePtr ImageFactory::open(const std::string& path, bool useCurl) {
+   auto image = open(ImageFactory::createIo(path, useCurl));  // may throw
+   if (!image)
+-    throw Error(ErrorCode::kerFileContainsUnknownImageType, path);
++    throw Error(ErrorCode::kerFileContainsUnknownImageType, image->io().path());
++  return image;
++}
++
++Image::UniquePtr ImageFactory::open(const fs::path& path) {
++  auto image = open(ImageFactory::createIo(path));  // may throw
++  if (!image)
++    throw Error(ErrorCode::kerFileContainsUnknownImageType, image->io().path());
+   return image;
+ }
+ 
+@@ -817,11 +830,11 @@ Image::UniquePtr ImageFactory::open(BasicIo::UniquePtr io) {
+   return nullptr;
+ }
+ 
+-Image::UniquePtr ImageFactory::create(ImageType type, const std::string& path) {
++Image::UniquePtr ImageFactory::create(ImageType type, const fs::path& path) {
+   auto fileIo = std::make_unique<FileIo>(path);
+   // Create or overwrite the file, then close it
+-  if (fileIo->open("w+b") != 0) {
+-    throw Error(ErrorCode::kerFileOpenFailed, path, "w+b", strError());
++  if (fileIo->open(STRLIT("w+b")) != 0) {
++    throw Error(ErrorCode::kerFileOpenFailed, fileIo->path(), "w+b", strError());
+   }
+   fileIo->close();
+ 

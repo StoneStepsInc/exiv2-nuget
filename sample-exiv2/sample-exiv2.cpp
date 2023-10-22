@@ -54,12 +54,12 @@ void printEXIF(const Exiv2::Image::UniquePtr& image)
             // byte sequence into our buffer or use one of the conversion methods,
             // like toUint32.
             //
-            for(int64_t c = 0; c < std::min<int64_t>(20, i->count()); c++)
+            for(size_t c = 0; c < std::min<size_t>(20, i->count()); c++)
                printf(" %02hhx", static_cast<unsigned char>(i->toUint32(c)));
             break;
          case Exiv2::TypeId::signedByte:
             // see Exiv2::TypeId::unsignedByte
-            for(int64_t c = 0; c < std::min<int64_t>(20, i->count()); c++)
+            for(size_t c = 0; c < std::min<size_t>(20, i->count()); c++)
                printf(" %" PRId64, i->toInt64(c));
             break;
          case Exiv2::TypeId::signedLong: {
@@ -80,7 +80,7 @@ void printEXIF(const Exiv2::Image::UniquePtr& image)
          case Exiv2::TypeId::unsignedLong:
          case Exiv2::TypeId::unsignedShort:
             // numberic types can also be obtained via toInt64, without casting
-            for(int64_t c = 0; c < std::min<int64_t>(20, i->count()); c++)
+            for(size_t c = 0; c < std::min<size_t>(20, i->count()); c++)
                printf(" %" PRId64, static_cast<int64_t>(i->toInt64(c)));
             break;
          case Exiv2::TypeId::asciiString: {
@@ -129,7 +129,7 @@ void printEXIF(const Exiv2::Image::UniquePtr& image)
                // for a scene type or kilobytes for maker notes. This type is mapped
                // to DataValue.
                //
-               for(int64_t c = 0; c < std::min<int64_t>(20, i->count()); c++)
+               for(size_t c = 0; c < std::min<size_t>(20, i->count()); c++)
                   printf(" %02hhx", static_cast<unsigned char>(i->toUint32(c)));
             }
             }

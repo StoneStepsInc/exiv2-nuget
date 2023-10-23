@@ -78,6 +78,9 @@ valid Unicode characters (i.e. will not work with URLs).
 Use methods that take `std::filesystem:path` to open images
 via the wide-character file interfaces.
 
+Note that `std::filesystem:path` requires C\+\+17 and will
+not compile in previous versions of C\+\+.
+
 ### `02-cmake-lists.patch`
 
 This patch adds a definition `SUPPRESS_WARNINGS` to disable
@@ -122,8 +125,10 @@ v0.27.6. Some of the most notable ones are listed below.
     `toInt64()` for signed integers and with `toUint32()` for
     unsigned integers.
   * `Exiv2::AnyError` has been removed.
-  * Native support for wide-character paths has been removed
-    (see the `01-wide-char-paths.patch` section above, however).
+  * Native support for wide-character paths has been removed.
+    The patch `01-wide-char-paths.patch` described above
+    restores limited support for wide-character paths, but
+    requires C\+\+17.
 
 ### Nuget dependencies patches
 

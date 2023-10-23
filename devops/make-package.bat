@@ -95,12 +95,20 @@ rem
 rem exiv2lib_int.lib and exiv2-xmp.lib are built in such a way that
 rem all of their object files are included into exiv2.lib, so there
 rem is no need to collect either for packaging.
+rem 
+rem However, we still need PDB files for both, and since neither is
+rem collected by the CMake-generated projects, we need to reach into
+rem their intermediate build directories.
 rem
 mkdir ..\nuget\build\native\lib\x64\Debug
 xcopy /Y build\lib\Debug\* ..\nuget\build\native\lib\x64\Debug\
+xcopy /Y build\src\exiv2lib_int.dir\Debug\exiv2lib_int.pdb ..\nuget\build\native\lib\x64\Debug\
+xcopy /Y build\xmpsdk\exiv2-xmp.dir\Debug\exiv2-xmp.pdb ..\nuget\build\native\lib\x64\Debug\
 
 mkdir ..\nuget\build\native\lib\x64\Release
 xcopy /Y build\lib\Release\* ..\nuget\build\native\lib\x64\Release\
+xcopy /Y build\src\exiv2lib_int.dir\Release\exiv2lib_int.pdb ..\nuget\build\native\lib\x64\Release\
+xcopy /Y build\xmpsdk\exiv2-xmp.dir\Release\exiv2-xmp.pdb ..\nuget\build\native\lib\x64\Release\
 
 mkdir ..\nuget\build\native\include\exiv2
 xcopy /Y /S include\exiv2\* ..\nuget\build\native\include\exiv2\

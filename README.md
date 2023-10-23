@@ -125,6 +125,8 @@ v0.27.6. Some of the most notable ones are listed below.
     `toInt64()` for signed integers and with `toUint32()` for
     unsigned integers.
   * `Exiv2::AnyError` has been removed.
+  * `Exiv2::IfdId` was changed to a scoped `enum` and will
+    not compare against integer values.
   * Native support for wide-character paths has been removed.
     The patch `01-wide-char-paths.patch` described above
     restores limited support for wide-character paths, but

@@ -335,11 +335,7 @@ conditionally compiled, such as the `Exiv2::http` function.
  * shell32.lib
 
 These library references are not automatically included within
-the package to keep linking against network and Windows shell
-libraries visible.
-
-The sample project copies PDB files from package dependencies
-to the project output directory in order to avoid linker warnings
-reporting missing zLib and Expat PDB files.
+the package to keep having to link against network and Windows
+shell libraries visible.
 
 [nuget.org]: https://www.nuget.org/packages/StoneSteps.Exiv2.VS2022.Static/

@@ -98,6 +98,7 @@ jobs:
     - name: Patch source
       working-directory: ${{ env.EXIV2_DNAME }}
       run: |
+        path
         patch -p1 --unified --input ..\patches\01-wide-char-paths.patch
         patch -p1 --unified --input ..\patches\02-cmake-lists.patch
         patch -p1 --unified --input ..\patches\03-cmake-find-zlib-expat.patch

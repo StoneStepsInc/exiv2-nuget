@@ -1,5 +1,5 @@
 diff --git a/include/exiv2/basicio.hpp b/include/exiv2/basicio.hpp
-index 179220464..fbc5581ef 100644
+index 179220464..f36199ef1 100644
 --- a/include/exiv2/basicio.hpp
 +++ b/include/exiv2/basicio.hpp
 @@ -13,12 +13,26 @@
@@ -56,6 +56,15 @@ index 179220464..fbc5581ef 100644
    /*!
      @brief Open the file using the default access mode of "rb".
          This method can also be used to "reopen" a file which will flush
+@@ -431,7 +445,7 @@ class EXIV2API FileIo : public BasicIo {
+   /*!
+     @brief close the file source and set a new path.
+    */
+-  virtual void setPath(const std::string& path);
++  virtual void setPath(const fs::path& path);
+ 
+   //@}
+   //! @name Accessors
 @@ -454,8 +468,15 @@ class EXIV2API FileIo : public BasicIo {
    [[nodiscard]] int error() const override;
    //! Returns true if the file position has reached the end, otherwise false.
@@ -146,7 +155,7 @@ index 66f14870c..3f1367539 100644
      @brief Create an Image subclass of the requested type by creating a
          new image in memory.
 diff --git a/src/basicio.cpp b/src/basicio.cpp
-index 9ab953a32..815216e8c 100644
+index 9ab953a32..a60f0a6e9 100644
 --- a/src/basicio.cpp
 +++ b/src/basicio.cpp
 @@ -79,14 +79,14 @@ void BasicIo::seekOrThrow(int64_t offset, Position pos, ErrorCode err) {
@@ -245,6 +254,15 @@ index 9ab953a32..815216e8c 100644
  }
  
  FileIo::~FileIo() {
+@@ -307,7 +323,7 @@ byte* FileIo::mmap(bool isWriteable) {
+   return p_->pMappedArea_;
+ }
+ 
+-void FileIo::setPath(const std::string& path) {
++void FileIo::setPath(const fs::path& path) {
+   close();
+   p_->path_ = path;
+ }
 @@ -345,13 +361,13 @@ size_t FileIo::write(BasicIo& src) {
  
  void FileIo::transfer(BasicIo& src) {

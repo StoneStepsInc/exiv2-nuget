@@ -10,25 +10,21 @@ https://github.com/Exiv2/exiv2
 
 ## Package Configuration
 
-The Exiv2 static libraries appropriate for the platform and
-configuration selected in a Visual Studio solution are explicitly
-referenced within this package and will appear within the solution
-folder tree after the package is installed. The solution may need
-to be reloaded to make the library file visible. These libraries
-may be moved into any solution folder after the installation.
+The Exiv2 static libraries from this package will appear within
+the installation target project after the package is installed.
+The solution may need to be reloaded to make libraries visible.
+Both, debug and release libraries will be listed in the project,
+but only the one appropriate for the currently selected
+configuration will be included in the build. These libraries
+may be moved into solution folders after the installation (e.g.
+`lib/Debug` and `lib/Release`).
 
 Note that the Exiv2 library path in this package will be selected
-as `Debug` or `Release` based on whether the active configuration
-is designated as a development or as a release configuration in
-the underlying `.vcxproj` file.
-
-Specifically, the initial project configurations have a property
-called `UseDebugLibraries` in the underlying `.vcxproj` file,
-which reflects whether the configuration is intended for building
-release or development artifacts. Additional configurations copied
-from these initial ones inherit this property. Manually created
-configurations should have this property defined in the `.vcxproj`
-file.
+as `Debug` or `Release` based on whether the selected configuration
+is designated as a development or as a release configuration via
+the standard Visual Studio property called `UseDebugLibraries`.
+Additional configurations copied from the standard ones will
+inherit this property. 
 
 Do not install this package if your projects use debug configurations
 without `UseDebugLibraries`. Note that CMake-generated Visual Studio
@@ -68,15 +64,18 @@ Exiv2 dropped support for wide-character paths in v0.28.0 and
 did not provide any alternative ways to open file paths with
 characters outside of the currently selected Windows character
 set, such as Win-1252. Their intent appears to rely on Windows
-replacing various locale code pages with the UTF-8 code page,
-but support for this solution is limited at this point.
+replacing various code pages with the UTF-8 code page, support
+for this solution in Windows is limited at this point.
 
 The Exiv2 source in this package is patched to restore limited
 file-only support for opening images with names comprised of
 valid Unicode characters (i.e. will not work with URLs).
 
 Use methods that take `std::filesystem:path` to open images
-via the wide-character file interfaces.
+via wide-character path methods. The original methods should
+work as before, and will open file paths with characters in
+some code pages, but will notbe able to open a file name like
+this - `"hello-\U0001F30E.jpg"`.
 
 Note that `std::filesystem:path` requires C\+\+17 and will
 not compile in previous versions of C\+\+.

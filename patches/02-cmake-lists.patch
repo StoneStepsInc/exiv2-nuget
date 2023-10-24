@@ -86,14 +86,14 @@ index dc82f2bcb..c1ea3009a 100644
      add_compile_options(/utf-8) # Set source and execution character sets to UTF-8
      add_definitions(-DNOMINMAX) # This definition is not only needed for Exiv2 but also for xmpsdk
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 41a672e89..180534d76 100644
+index 41a672e89..3de4fec56 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
 @@ -166,6 +166,9 @@ set_target_properties( exiv2lib PROPERTIES
      COMPILE_FLAGS ${EXTRA_COMPILE_FLAGS}
  )
  
-+# TIFF reader is trying to read XMP even when it is disabled and generates warnings
++# disable out-of-context errors and warnings printed to stderr
 +add_compile_definitions(SUPPRESS_WARNINGS)
 +
  if (MSVC)

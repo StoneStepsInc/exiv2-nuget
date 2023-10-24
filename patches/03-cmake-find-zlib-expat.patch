@@ -34,7 +34,7 @@ index 49c9a10f6..5717fb898 100644
  
  check_cxx_symbol_exists(strerror_r  string.h       EXV_HAVE_STRERROR_R )
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 180534d76..2c4afeeeb 100644
+index 3de4fec56..076e17860 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
 @@ -179,15 +179,15 @@ set_target_properties( exiv2lib_int PROPERTIES

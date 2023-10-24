@@ -48,7 +48,6 @@ rem
 rem Generate VS projects to allow us to set up Nuget dependencies
 rem below.
 rem
-rem     -DCMAKE_BUILD_TYPE=Debug ^
 cmake -S . -B build -G "Visual Studio 17 2022" -A x64 ^
     -DBUILD_SHARED_LIBS=OFF ^
     -DEXIV2_ENABLE_WEBREADY=OFF ^
@@ -57,7 +56,6 @@ cmake -S . -B build -G "Visual Studio 17 2022" -A x64 ^
     -DEXIV2_ENABLE_INIH=OFF ^
     -DEXIV2_ENABLE_VIDEO=ON ^
     -DEXIV2_ENABLE_XMP=ON ^
-    -DEXIV2_ENABLE_SSH=OFF ^
     -DEXIV2_BUILD_SAMPLES=OFF ^
     -DEXIV2_BUILD_EXIV2_COMMAND=OFF ^
     -DEXIV2_BUILD_UNIT_TESTS=OFF ^

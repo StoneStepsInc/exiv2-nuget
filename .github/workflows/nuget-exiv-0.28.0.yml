@@ -116,7 +116,6 @@ jobs:
             -DEXIV2_ENABLE_INIH=OFF ^
             -DEXIV2_ENABLE_VIDEO=ON ^
             -DEXIV2_ENABLE_XMP=ON ^
-            -DEXIV2_ENABLE_SSH=OFF ^
             -DEXIV2_BUILD_SAMPLES=OFF ^
             -DEXIV2_BUILD_EXIV2_COMMAND=OFF ^
             -DEXIV2_BUILD_UNIT_TESTS=OFF ^

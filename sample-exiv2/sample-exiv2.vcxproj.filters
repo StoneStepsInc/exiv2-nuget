@@ -3,4 +3,15 @@
   <ItemGroup>
     <ClCompile Include="sample-exiv2.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Filter Include="lib">
+      <UniqueIdentifier>{a142a4d8-f416-42bf-a42c-78de7ac73aff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\Debug">
+      <UniqueIdentifier>{7604f450-ab71-4300-b37d-c49f460066df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\Release">
+      <UniqueIdentifier>{193ca33a-2308-42e8-b4fd-f15c3dea976e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
 </Project>

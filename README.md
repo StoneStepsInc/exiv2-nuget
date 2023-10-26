@@ -47,11 +47,6 @@ options:
   * `EXIV2_BUILD_FUZZ_TESTS=OFF`
   * `EXIV2_ENABLE_PNG=ON`
 
-You may need to copy PDB files from package dependencies to the
-output directory in order to avoid linker warnings reporting for
-missing zLib and Expat PDB files. See _Build Events > Pre-Link
-Events_ in the sample project for an example.
-
 ## Exiv2 Changes
 
 Exiv2 source that was used to create this package contains a few
@@ -64,12 +59,12 @@ Exiv2 dropped support for wide-character paths in v0.28.0 and
 did not provide any alternative ways to open file paths with
 characters outside of the currently selected Windows character
 set, such as Win-1252. Their intent appears to rely on Windows
-replacing various code pages with the UTF-8 code page, support
-for this solution in Windows is limited at this point.
+replacing various code pages with the UTF-8 code page, but
+support for this solution in Windows is limited at this point.
 
 The Exiv2 source in this package is patched to restore limited
 file-only support for opening images with names comprised of
-valid Unicode characters (i.e. will not work with URLs).
+valid Unicode characters.
 
 Use methods that take `std::filesystem:path` to open images
 via wide-character path methods. The original methods should

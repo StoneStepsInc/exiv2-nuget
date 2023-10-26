@@ -36,15 +36,14 @@ void printEXIF(const Exiv2::Image::UniquePtr& image)
 
    for(Exiv2::ExifData::const_iterator i = exifData.begin(); i != exifData.end(); ++i) {
       //
-      // IFD IDs are tucked away in the Internal namespace, which makes
-      // it impossible to use numeric symbols in comparisons (e.g. to
-      // skip the thumbnail IFD - Exiv2::Internal::IfdId::ifd1Id).
+      // IFD IDs are represented with a scoped enum and need to be cast
+      // to be interpreted as integers.
       // 
       // Group names are abbreviated and don't match EXIF folder names.
       // For example, ExifIFD/MakerNoteCanon/TimeZone is reported as
       // Exif.CanonTi.TimeZone.
       //
-      printf("[%s(%x)/%x] %s.%s.%s (%s,%zd,%zd):", i->ifdName(), i->ifdId(), i->tag(), i->familyName(), i->groupName().c_str(), i->tagName().c_str(), i->typeName(), i->typeSize(), i->count());
+      printf("[%s(%x)/%x] %s.%s.%s (%s,%zd,%zd):", i->ifdName(), static_cast<uint32_t>(i->ifdId()), i->tag(), i->familyName(), i->groupName().c_str(), i->tagName().c_str(), i->typeName(), i->typeSize(), i->count());
 
       switch (i->typeId()) {
          case Exiv2::TypeId::unsignedByte:

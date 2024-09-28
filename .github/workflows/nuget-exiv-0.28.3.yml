@@ -99,9 +99,6 @@ jobs:
       working-directory: ${{ env.EXIV2_DNAME }}
       run: |
         PATH %PATH:C:\Strawberry\c\bin;=%
-        path
-        patch --version
-        patch --help
         patch -p1 --unified --input ..\patches\01-wide-char-paths.patch
         patch -p1 --unified --binary --input ..\patches\02-cmake-lists.patch
         patch -p1 --unified --input ..\patches\03-cmake-find-zlib-expat.patch

@@ -1,5 +1,5 @@
---- "exiv2-0.28.3_base\\build\\xmpsdk\\exiv2-xmp.vcxproj"	2024-09-24 19:44:32.152565600 -0400
-+++ "exiv2-0.28.3\\build\\xmpsdk\\exiv2-xmp.vcxproj"	2024-09-24 21:49:06.339685300 -0400
+--- a/build/xmpsdk/exiv2-xmp.vcxproj	2024-09-24 19:44:32.152565600 -0400
++++ b/build/xmpsdk/exiv2-xmp.vcxproj	2024-09-24 21:49:06.339685300 -0400
 @@ -1,5 +1,6 @@
  ﻿<?xml version="1.0" encoding="utf-8"?>
  <Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">

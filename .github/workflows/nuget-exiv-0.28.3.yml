@@ -86,7 +86,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Download Exiv2
-      run: curl --location --output ${{ env.EXIV2_FNAME }} https://github.com/Exiv2/exiv2/releases/download/v${{ env.PKG_VER }}/${{ env.EXIV2_FNAME }}
+      run: curl --location --output ${{ env.EXIV2_FNAME }} https://github.com/Exiv2/exiv2/archive/refs/tags/v${{ env.PKG_VER }}.tar.gz
     
     - name: Verify Exiv2 checksum
       run: 7z h -scrcSHA256 ${{ env.EXIV2_FNAME }} | findstr /C:"SHA256 for data" | call devops\check-sha256 "${{ env.EXIV2_SHA256 }}"

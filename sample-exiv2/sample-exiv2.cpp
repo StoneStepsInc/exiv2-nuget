@@ -9,7 +9,7 @@
 using namespace std::literals::string_literals;
 using namespace std::literals::string_view_literals;
 
-void printEXIF(const Exiv2::Image::UniquePtr& image)
+static void printEXIF(const Exiv2::Image::UniquePtr& image)
 {
    const Exiv2::ExifData& exifData = image->exifData();
 
@@ -165,7 +165,7 @@ void printEXIF(const Exiv2::Image::UniquePtr& image)
    }
 }
 
-void printXMP(const Exiv2::Image::UniquePtr& image)
+static void printXMP(const Exiv2::Image::UniquePtr& image)
 {
    //
    // XMP may be decoded when tax 0x2bc (XMLPacket) is iterated in

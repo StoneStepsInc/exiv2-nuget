@@ -1,24 +1,40 @@
---- a/build/xmpsdk/exiv2-xmp.vcxproj	2023-10-14 22:09:42.589113000 -0400
-+++ b/build/xmpsdk/exiv2-xmp.vcxproj	2023-10-14 22:13:36.069160600 -0400
+--- "exiv2-0.28.3_base\\build\\xmpsdk\\exiv2-xmp.vcxproj"	2024-09-24 19:44:32.152565600 -0400
++++ "exiv2-0.28.3\\build\\xmpsdk\\exiv2-xmp.vcxproj"	2024-09-24 21:49:06.339685300 -0400
 @@ -1,5 +1,6 @@
  ﻿<?xml version="1.0" encoding="utf-8"?>
  <Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-+  <Import Project="..\packages\StoneSteps.Expat.VS2022.Static.2.5.0.4\build\native\StoneSteps.expat.VS2022.Static.props" Condition="Exists('..\packages\StoneSteps.Expat.VS2022.Static.2.5.0.4\build\native\StoneSteps.expat.VS2022.Static.props')" />
++  <Import Project="..\packages\StoneSteps.Expat.VS2022.Static.2.6.3.1\build\native\StoneSteps.Expat.VS2022.Static.props" Condition="Exists('..\packages\StoneSteps.Expat.VS2022.Static.2.6.3.1\build\native\StoneSteps.Expat.VS2022.Static.props')" />
    <PropertyGroup>
      <PreferredToolArchitecture>x64</PreferredToolArchitecture>
    </PropertyGroup>
-@@ -317,5 +318,13 @@
+@@ -34,6 +35,7 @@
+     <ConfigurationType>StaticLibrary</ConfigurationType>
+     <CharacterSet>MultiByte</CharacterSet>
+     <PlatformToolset>v143</PlatformToolset>
++    <UseDebugLibraries>true</UseDebugLibraries>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+     <ConfigurationType>StaticLibrary</ConfigurationType>
+@@ -310,6 +312,7 @@
+     </None>
+     <ClInclude Include="C:\projects\nuget\exiv2-nuget\exiv2-0.28.3\xmpsdk\include\XMPSDK.hpp" />
+     <ClInclude Include="C:\projects\nuget\exiv2-nuget\exiv2-0.28.3\xmpsdk\include\XMP_Version.h" />
++    <None Include="packages.config" />
+   </ItemGroup>
+   <ItemGroup>
+     <ProjectReference Include="C:\projects\nuget\exiv2-nuget\exiv2-0.28.3\build\ZERO_CHECK.vcxproj">
+@@ -321,5 +324,13 @@
    </ItemGroup>
    <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
    <ImportGroup Label="ExtensionTargets">
-+    <Import Project="..\packages\StoneSteps.Expat.VS2022.Static.2.5.0.4\build\native\StoneSteps.expat.VS2022.Static.targets" Condition="Exists('..\packages\StoneSteps.Expat.VS2022.Static.2.5.0.4\build\native\StoneSteps.expat.VS2022.Static.targets')" />
++    <Import Project="..\packages\StoneSteps.Expat.VS2022.Static.2.6.3.1\build\native\StoneSteps.Expat.VS2022.Static.targets" Condition="Exists('..\packages\StoneSteps.Expat.VS2022.Static.2.6.3.1\build\native\StoneSteps.Expat.VS2022.Static.targets')" />
    </ImportGroup>
 +  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
 +    <PropertyGroup>
 +      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
 +    </PropertyGroup>
-+    <Error Condition="!Exists('..\packages\StoneSteps.Expat.VS2022.Static.2.5.0.4\build\native\StoneSteps.expat.VS2022.Static.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\StoneSteps.Expat.VS2022.Static.2.5.0.4\build\native\StoneSteps.expat.VS2022.Static.props'))" />
-+    <Error Condition="!Exists('..\packages\StoneSteps.Expat.VS2022.Static.2.5.0.4\build\native\StoneSteps.expat.VS2022.Static.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\StoneSteps.Expat.VS2022.Static.2.5.0.4\build\native\StoneSteps.expat.VS2022.Static.targets'))" />
++    <Error Condition="!Exists('..\packages\StoneSteps.Expat.VS2022.Static.2.6.3.1\build\native\StoneSteps.Expat.VS2022.Static.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\StoneSteps.Expat.VS2022.Static.2.6.3.1\build\native\StoneSteps.Expat.VS2022.Static.props'))" />
++    <Error Condition="!Exists('..\packages\StoneSteps.Expat.VS2022.Static.2.6.3.1\build\native\StoneSteps.Expat.VS2022.Static.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\StoneSteps.Expat.VS2022.Static.2.6.3.1\build\native\StoneSteps.Expat.VS2022.Static.targets'))" />
 +  </Target>
  </Project>
 \ No newline at end of file

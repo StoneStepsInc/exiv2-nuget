@@ -1,5 +1,19 @@
+Date:   Sun Oct 22 11:29:27 2023 -0400
+
+    Changed FileIo to allow opening wide-character paths
+    
+    * FileIo was modified to allow using std::filesystem::path,
+      which allows opening files with any characters in the file
+      path.
+    * A few additional FileIo dependencies have been modified as
+      well to make new methods and parameters work.
+    * Note that these changes are intended for opening images
+      via the file system and may not work with other methods,
+      such as via cURL. CMake settings used to build this code
+      should disable remote I/O.
+
 diff --git a/include/exiv2/basicio.hpp b/include/exiv2/basicio.hpp
-index 179220464..f36199ef1 100644
+index 71155136d..00ee2b91d 100644
 --- a/include/exiv2/basicio.hpp
 +++ b/include/exiv2/basicio.hpp
 @@ -13,12 +13,26 @@
@@ -38,7 +52,7 @@ index 179220464..f36199ef1 100644
  
    /*!
      @brief Mark all the bNone blocks to bKnow. This avoids allocating memory
-@@ -290,7 +304,7 @@ class EXIV2API FileIo : public BasicIo {
+@@ -291,7 +305,7 @@ class EXIV2API FileIo : public BasicIo {
          therefore never fails.
      @param path The full path of a file
     */
@@ -47,7 +61,7 @@ index 179220464..f36199ef1 100644
  
    //! Destructor. Flushes and closes an open file.
    ~FileIo() override;
-@@ -311,7 +325,7 @@ class EXIV2API FileIo : public BasicIo {
+@@ -312,7 +326,7 @@ class EXIV2API FileIo : public BasicIo {
      @return 0 if successful;<BR>
          Nonzero if failure.
     */
@@ -56,7 +70,7 @@ index 179220464..f36199ef1 100644
    /*!
      @brief Open the file using the default access mode of "rb".
          This method can also be used to "reopen" a file which will flush
-@@ -431,7 +445,7 @@ class EXIV2API FileIo : public BasicIo {
+@@ -432,7 +446,7 @@ class EXIV2API FileIo : public BasicIo {
    /*!
      @brief close the file source and set a new path.
     */
@@ -65,7 +79,7 @@ index 179220464..f36199ef1 100644
  
    //@}
    //! @name Accessors
-@@ -454,8 +468,15 @@ class EXIV2API FileIo : public BasicIo {
+@@ -455,8 +469,15 @@ class EXIV2API FileIo : public BasicIo {
    [[nodiscard]] int error() const override;
    //! Returns true if the file position has reached the end, otherwise false.
    [[nodiscard]] bool eof() const override;
@@ -82,7 +96,7 @@ index 179220464..f36199ef1 100644
  
    /*!
      @brief Mark all the bNone blocks to bKnow. This avoids allocating memory
-@@ -636,7 +657,7 @@ class EXIV2API MemIo : public BasicIo {
+@@ -638,7 +659,7 @@ class EXIV2API MemIo : public BasicIo {
    //! Returns true if the IO position has reached the end, otherwise false.
    [[nodiscard]] bool eof() const override;
    //! Returns a dummy path, indicating that memory access is used
@@ -91,7 +105,7 @@ index 179220464..f36199ef1 100644
  
    /*!
      @brief Mark all the bNone blocks to bKnow. This avoids allocating memory
-@@ -886,7 +907,7 @@ class EXIV2API RemoteIo : public BasicIo {
+@@ -888,7 +909,7 @@ class EXIV2API RemoteIo : public BasicIo {
    //! Returns true if the IO position has reached the end, otherwise false.
    [[nodiscard]] bool eof() const override;
    //! Returns the URL of the file.
@@ -100,7 +114,7 @@ index 179220464..f36199ef1 100644
  
    /*!
      @brief Mark all the bNone blocks to bKnow. This avoids allocating memory
-@@ -976,13 +997,13 @@ class EXIV2API CurlIo : public RemoteIo {
+@@ -978,13 +999,13 @@ class EXIV2API CurlIo : public RemoteIo {
    @return Buffer containing the file.
    @throw Error In case of failure.
   */
@@ -117,7 +131,7 @@ index 179220464..f36199ef1 100644
  /*!
    @brief The callback function is called by libcurl to write the data
 diff --git a/include/exiv2/image.hpp b/include/exiv2/image.hpp
-index 66f14870c..3f1367539 100644
+index 629a8a4fd..4ab9dcfc1 100644
 --- a/include/exiv2/image.hpp
 +++ b/include/exiv2/image.hpp
 @@ -523,6 +523,11 @@ class EXIV2API ImageFactory {
@@ -155,10 +169,10 @@ index 66f14870c..3f1367539 100644
      @brief Create an Image subclass of the requested type by creating a
          new image in memory.
 diff --git a/src/basicio.cpp b/src/basicio.cpp
-index 9ab953a32..a60f0a6e9 100644
+index 66e78831d..84efa5918 100644
 --- a/src/basicio.cpp
 +++ b/src/basicio.cpp
-@@ -79,14 +79,14 @@ void BasicIo::seekOrThrow(int64_t offset, Position pos, ErrorCode err) {
+@@ -69,14 +69,14 @@ void BasicIo::seekOrThrow(int64_t offset, Position pos, ErrorCode err) {
  class FileIo::Impl {
   public:
    //! Constructor
@@ -176,7 +190,7 @@ index 9ab953a32..a60f0a6e9 100644
    FILE* fp_{};             //!< File stream pointer
    OpMode opMode_{opSeek};  //!< File open mode
  
-@@ -106,6 +106,8 @@ class FileIo::Impl {
+@@ -96,6 +96,8 @@ class FileIo::Impl {
    };
    // #endif
    // METHODS
@@ -185,7 +199,7 @@ index 9ab953a32..a60f0a6e9 100644
    /*!
      @brief Switch to a new access mode, reopening the file if needed.
          Optimized to only reopen the file when it is really necessary.
-@@ -120,7 +122,16 @@ class FileIo::Impl {
+@@ -110,7 +112,16 @@ class FileIo::Impl {
    Impl& operator=(const Impl&) = delete;  //!< Assignment
  };
  
@@ -203,7 +217,7 @@ index 9ab953a32..a60f0a6e9 100644
  }
  
  int FileIo::Impl::switchMode(OpMode opMode) {
-@@ -134,12 +145,12 @@ int FileIo::Impl::switchMode(OpMode opMode) {
+@@ -124,12 +135,12 @@ int FileIo::Impl::switchMode(OpMode opMode) {
      case opRead:
        // Flush if current mode allows reading, else reopen (in mode "r+b"
        // as in this case we know that we can write to the file)
@@ -218,10 +232,10 @@ index 9ab953a32..a60f0a6e9 100644
          reopen = false;
        break;
      case opSeek:
-@@ -171,9 +182,9 @@ int FileIo::Impl::switchMode(OpMode opMode) {
-     std::fclose(fp_);
-     fp_ = nullptr;
-   }
+@@ -158,9 +169,9 @@ int FileIo::Impl::switchMode(OpMode opMode) {
+     return -1;
+   // 'Manual' open("r+b") to avoid munmap()
+   std::fclose(fp_);
 -  openMode_ = "r+b";
 +  openMode_ = STRLIT("r+b");
    opMode_ = opSeek;
@@ -230,7 +244,7 @@ index 9ab953a32..a60f0a6e9 100644
    if (!fp_)
      return 1;
  #ifdef _WIN32
-@@ -184,8 +195,13 @@ int FileIo::Impl::switchMode(OpMode opMode) {
+@@ -171,8 +182,13 @@ int FileIo::Impl::switchMode(OpMode opMode) {
  }  // FileIo::Impl::switchMode
  
  int FileIo::Impl::stat(StructStat& buf) const {
@@ -245,7 +259,7 @@ index 9ab953a32..a60f0a6e9 100644
    if (ret == 0) {
      buf.st_size = st.st_size;
      buf.st_mode = st.st_mode;
-@@ -193,7 +209,7 @@ int FileIo::Impl::stat(StructStat& buf) const {
+@@ -180,7 +196,7 @@ int FileIo::Impl::stat(StructStat& buf) const {
    return ret;
  }  // FileIo::Impl::stat
  
@@ -254,7 +268,7 @@ index 9ab953a32..a60f0a6e9 100644
  }
  
  FileIo::~FileIo() {
-@@ -307,7 +323,7 @@ byte* FileIo::mmap(bool isWriteable) {
+@@ -294,7 +310,7 @@ byte* FileIo::mmap(bool isWriteable) {
    return p_->pMappedArea_;
  }
  
@@ -263,7 +277,7 @@ index 9ab953a32..a60f0a6e9 100644
    close();
    p_->path_ = path;
  }
-@@ -345,13 +361,13 @@ size_t FileIo::write(BasicIo& src) {
+@@ -332,13 +348,13 @@ size_t FileIo::write(BasicIo& src) {
  
  void FileIo::transfer(BasicIo& src) {
    const bool wasOpen = (p_->fp_ != nullptr);
@@ -279,7 +293,7 @@ index 9ab953a32..a60f0a6e9 100644
        // Remove the (temporary) file
        fs::remove(fileIo->path());
        throw Error(ErrorCode::kerFileOpenFailed, path(), "a+b", strError());
-@@ -360,7 +376,6 @@ void FileIo::transfer(BasicIo& src) {
+@@ -347,7 +363,6 @@ void FileIo::transfer(BasicIo& src) {
  
      bool statOk = true;
      mode_t origStMode = 0;
@@ -287,7 +301,7 @@ index 9ab953a32..a60f0a6e9 100644
  
      Impl::StructStat buf1;
      if (p_->stat(buf1) == -1) {
-@@ -375,55 +390,59 @@ void FileIo::transfer(BasicIo& src) {
+@@ -362,55 +377,59 @@ void FileIo::transfer(BasicIo& src) {
        // that file has been opened with FILE_SHARE_DELETE by another process,
        // like a virus scanner or disk indexer
        // (see also http://stackoverflow.com/a/11023068)
@@ -364,7 +378,7 @@ index 9ab953a32..a60f0a6e9 100644
        throw Error(ErrorCode::kerFileOpenFailed, path(), "w+b", strError());
      }
      if (src.open() != 0) {
-@@ -435,7 +454,7 @@ void FileIo::transfer(BasicIo& src) {
+@@ -422,7 +441,7 @@ void FileIo::transfer(BasicIo& src) {
  
    if (wasOpen) {
      if (open(lastMode) != 0) {
@@ -373,7 +387,7 @@ index 9ab953a32..a60f0a6e9 100644
      }
    } else
      close();
-@@ -486,7 +505,7 @@ size_t FileIo::tell() const {
+@@ -473,7 +492,7 @@ size_t FileIo::tell() const {
  
  size_t FileIo::size() const {
    // Flush and commit only if the file is open for writing
@@ -382,7 +396,7 @@ index 9ab953a32..a60f0a6e9 100644
      std::fflush(p_->fp_);
  #ifdef _MSC_VER
      // This is required on msvcrt before stat after writing to a file
-@@ -502,14 +521,14 @@ size_t FileIo::size() const {
+@@ -489,14 +508,14 @@ size_t FileIo::size() const {
  
  int FileIo::open() {
    // Default open is in read-only binary mode
@@ -400,7 +414,7 @@ index 9ab953a32..a60f0a6e9 100644
    if (!p_->fp_)
      return 1;
    return 0;
-@@ -564,8 +583,17 @@ bool FileIo::eof() const {
+@@ -551,8 +570,17 @@ bool FileIo::eof() const {
    return std::feof(p_->fp_) != 0;
  }
  
@@ -420,7 +434,7 @@ index 9ab953a32..a60f0a6e9 100644
  }
  
  void FileIo::populateFakeData() {
-@@ -864,7 +892,7 @@ bool MemIo::eof() const {
+@@ -852,7 +880,7 @@ bool MemIo::eof() const {
    return p_->eof_;
  }
  
@@ -429,7 +443,7 @@ index 9ab953a32..a60f0a6e9 100644
    static std::string _path{"MemIo"};
    return _path;
  }
-@@ -1373,7 +1401,7 @@ bool RemoteIo::eof() const {
+@@ -1371,7 +1399,7 @@ bool RemoteIo::eof() const {
    return p_->eof_;
  }
  
@@ -441,7 +455,7 @@ index 9ab953a32..a60f0a6e9 100644
 @@ -1727,26 +1755,32 @@ CurlIo::CurlIo(const std::string& url, size_t blockSize) {
  // *************************************************************************
  // free functions
- 
+ #ifdef EXV_ENABLE_FILESYSTEM
 -DataBuf readFile(const std::string& path) {
 +DataBuf readFile(const fs::path& path) {
    FileIo file(path);
@@ -481,11 +495,11 @@ index 9ab953a32..a60f0a6e9 100644
    return file.write(buf.c_data(), buf.size());
  }
 diff --git a/src/image.cpp b/src/image.cpp
-index 05d8345f9..6e528715e 100644
+index f06660cf7..1f178f8c0 100644
 --- a/src/image.cpp
 +++ b/src/image.cpp
-@@ -791,10 +791,23 @@ BasicIo::UniquePtr ImageFactory::createIo(const std::string& path, bool useCurl)
-   (void)(useCurl);
+@@ -801,10 +801,23 @@ BasicIo::UniquePtr ImageFactory::createIo(const std::string& path, [[maybe_unuse
+ #endif
  }  // ImageFactory::createIo
  
 +BasicIo::UniquePtr ImageFactory::createIo(const fs::path& path)
@@ -509,10 +523,10 @@ index 05d8345f9..6e528715e 100644
    return image;
  }
  
-@@ -817,11 +830,11 @@ Image::UniquePtr ImageFactory::open(BasicIo::UniquePtr io) {
-   return nullptr;
+@@ -828,11 +841,11 @@ Image::UniquePtr ImageFactory::open(BasicIo::UniquePtr io) {
  }
  
+ #ifdef EXV_ENABLE_FILESYSTEM
 -Image::UniquePtr ImageFactory::create(ImageType type, const std::string& path) {
 +Image::UniquePtr ImageFactory::create(ImageType type, const fs::path& path) {
    auto fileIo = std::make_unique<FileIo>(path);

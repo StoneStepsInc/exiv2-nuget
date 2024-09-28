@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph GraphDirection="BottomToTop" Layout="Sugiyama" ZoomLevel="-1" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+    <Node Id="126e507d-f2d6-4a5d-87e2-cd54e63ea0701" Category="Comment" Bounds="910.906246441658,547.197974744475,248.763333333333,190.88" Label="Reads data from stdin and data URIs.&#xD;&#xA;&#xD;&#xA;Derived from MemIo if EXV_XPATH_MEMIO is defined or FileIo if EXV_ENABLE_FILESYSTEM is defined." UseManualLocation="True" />
+    <Node Id="6f3671a1-9f90-49f6-ab38-1a5f02f0c0f51" Category="Comment" Bounds="1126.10180826823,-321.957134197998,223.423333333333,77.83" Label="Carries file open mode as a tuple of narrow and wide character strings" UseManualLocation="True" />
+    <Node Id="7e8f8668-9692-4cc4-b043-4492da6369001" Category="Comment" Bounds="2370.35383063863,-16.6956058718855,244.996666666667,100.44" Label="Added to take std::filesystem::path instead of std::string and propagate it through the dependencies" UseManualLocation="True" />
+    <Node Id="87288638-2ae7-4375-92c4-9873c6813fb61" Category="Comment" Bounds="1629.56172648112,316.537133178711,242.256666666667,258.71" Label="Original method. Constructs FileIo or XPathIo from a narrow character string via implicit conversion to std::filesystem::path. Will fail for some character encodings (e.g. may expect a specific code page and not UTF-8).&#xD;&#xA;&#xD;&#xA;Use createIo that takes syd::filesystem::path instead." UseManualLocation="True" />
+    <Node Id="A" Bounds="12.000000526304,-552.998924315029,50,32.6100000000001" Label="A" UseManualLocation="True" />
+    <Node Id="A1" Bounds="12.7710581320474,-490.388824315029,50,32.6100000000002" Label="A" UseManualLocation="True" />
+    <Node Id="ACallsB" Category="Comment" Bounds="-3.64287134763913,-624.394120280503,81.9766666666667,32.6100000000001" Label="A calls B" UseManualLocation="True" />
+    <Node Id="AConstructsC" Category="Comment" Bounds="-25.8541084368003,-405.314803514154,127.57,32.6100000000001" Label="A constructs C" UseManualLocation="True" />
+    <Node Id="AddedToCreateFileIoInstancesFromStd::filesystem::path" Category="Comment" Bounds="1436.78396024212,-294.839138166791,185.436666666667,77.83" Label="Added to create FileIo instances from std::filesystem::path" UseManualLocation="True" />
+    <Node Id="AddedToCreateFileIoInstancesFromStd::filesystem::path1" Category="Comment" Bounds="2089.05335507067,-305.691017411469,185.436666666667,77.83" Label="Added to create FileIo instances from std::filesystem::path" UseManualLocation="True" />
+    <Node Id="B" Bounds="117.297192322762,-554.51642489658,50,32.6100000000001" UseManualLocation="True" />
+    <Node Id="BasicIo" Category="Class" Bounds="468.881422931266,-387.577587323168,257.096666666667,92.6102000000001" Group="Expanded" UseManualLocation="True" />
+    <Node Id="BasicIo::UniquePtrCreateIo(constFs::path&amp;Path)" Bounds="1439.75782145182,-45.6512059188129,434.726666666667,32.61" Label="BasicIo::UniquePtr createIo(const std::filesystem::path&amp;)" UseManualLocation="True" />
+    <Node Id="BasicIo::UniquePtrImageFactory::createIo(constStd::string&amp;Path,[[maybe_unused]]BoolUseCurl)" Bounds="1447.41807535807,91.7389808678387,503.176666666667,32.61" Label="BasicIo::UniquePtr createIo(const std::string&amp; path, bool useCurl)" UseManualLocation="True" />
+    <Node Id="C" Category="Class" Bounds="117.936666666667,-490.154976302182,50,32.6100000000001" UseManualLocation="True" />
+    <Node Id="ChangedToReturnATemporary" Category="Comment" Bounds="866.925317789714,-670.377687323168,234.783333333333,281.32" Label="Changed to return a temporary, so it can be constructed from std::filesystem::path or potentially other I/O-specific sources.&#xD;&#xA;&#xD;&#xA;Should be used only for reporting and never to construct any instances because of lossy string encoding conversions." UseManualLocation="True" />
+    <Node Id="ChangedToTakeStd::filesystem::pathInsteadOfStd::string" Category="Comment" Bounds="336.536798204353,60.6583753695305,244.996666666667,100.44" Label="Changed to take std::filesystem::path instead of std::string and propagate it through the dependencies" UseManualLocation="True" />
+    <Node Id="Class" Category="Class" Bounds="-0.910859015782691,-693.329475097656,57.72,32.6100000000001" UseManualLocation="True" />
+    <Node Id="Constructor" Category="Constructor" Bounds="240.039140984217,-689.586036376953,108.093333333333,32.6100000000001" UseManualLocation="True" />
+    <Node Id="DataBufReadFile(constFs::path&amp;Path)1" Bounds="546.869339192509,491.690606149905,266.063333333333,32.61" Label="DataBuf readFile(const fs::path&amp;)" UseManualLocation="True" />
+    <Node Id="DataMember" Category="DataMember" Bounds="86.8091409842173,-692.045814208984,123.23,32.6100000000001" Label="Data Member" UseManualLocation="True" />
+    <Node Id="FILE*open(constStd::tuple&lt;std::string,Std::wstring&gt;&amp;Mode)" Bounds="792.324094028254,67.0251258461457,475.323333333333,32.61" Label="FILE *open(const std::tuple&lt;std::string, std::wstring&gt;&amp; mode)" UseManualLocation="True" />
+    <Node Id="FileIo" Category="Class" Bounds="751.203188883464,-200.805376287842,556.444256591797,590.881105564543" Group="Expanded" UseManualLocation="True" />
+    <Node Id="FileIo(constFs::path&amp;Path)" Category="Constructor" Bounds="780.118831577082,149.635328719755,313.656666666667,32.61" Label="FileIo(const std::filesystem::path&amp; path)" UseManualLocation="True" />
+    <Node Id="FileIo::Impl" Category="Class" Bounds="771.20317076979,-160.805276807358,516.444256591798,280.440502653504" Group="Expanded" Label="FileIo::Impl" UseManualLocation="True" />
+    <Node Id="Fs::pathPath_" Category="DataMember" Bounds="796.450534457942,-120.805176807358,181.523333333333,32.61" Label="filesystem::path path_" UseManualLocation="True" />
+    <Node Id="Image::UniquePtrCreate(ImageTypeType,ConstFs::path&amp;Path)" Bounds="1450.41469970703,29.1288782143353,582.18,32.61" Label="Image::UniquePtr create(ImageType type, const std::filesystem::path&amp; path)" UseManualLocation="True" />
+    <Node Id="Image::UniquePtrImageFactory::open(BasicIo::UniquePtrIo)" Bounds="1904.4844523112,-46.151206617983,337.16,32.61" Label="Image::UniquePtr open(BasicIo::UniquePtr)" UseManualLocation="True" />
+    <Node Id="Image::UniquePtrOpen(constFs::path&amp;Path)" Bounds="1720.24726327152,-126.367926243491,407.406666666667,32.61" Label="Image::UniquePtr open(const std::filesystem::path&amp;)" UseManualLocation="True" />
+    <Node Id="ImageFactory" Category="Class" Bounds="1419.75782145182,-166.368026243491,841.88663085938,310.71710711133" Group="Expanded" UseManualLocation="True" />
+    <Node Id="Impl(constFs::path&amp;Path)" Category="Constructor" Bounds="791.20317076979,4.41502584614569,307.026666666667,32.61" Label="Impl(const std::filesystem::path&amp; path)" UseManualLocation="True" />
+    <Node Id="IntOpen(constStd::tuple&lt;std::string,Std::wstring&gt;&amp;Mode);" Bounds="777.306801140884,337.465628719755,458.303333333333,32.61" Label="int open(const std::tuple&lt;std::string, std::wstring&gt;&amp; mode)" UseManualLocation="True" />
+    <Node Id="LooksFor'/'InTheFilePath" Category="Comment" Bounds="2056.56505981445,310.537126862202,246.796666666667,236.1" Label="A questionable method that skips 7 characters (supposedly URI scheme) and looks for '/' in remaining string. If found, returns a substring from that position.&#xD;&#xA;&#xD;&#xA;Will not handle URI-encoded sequences and should be avoided when possible." UseManualLocation="True" />
+    <Node Id="MaintainsEitherAU8char_tOrAWchar_tPath" Category="Comment" Bounds="840.1147562646,-325.389189293271,218.986666666667,77.83" Label="Carries paths encoded as narrow and wide character strings" UseManualLocation="True" />
+    <Node Id="MemIo" Category="Class" Bounds="494.21317076979,-192.151770532226,226.99,92.6102" Group="Expanded" UseManualLocation="True" />
+    <Node Id="Method" Bounds="378.132474317551,-686.551826171875,79.5066666666667,32.6100000000001" UseManualLocation="True" />
+    <Node Id="RemoteIo" Category="Class" Bounds="208.759819035437,-192.711783349609,226.99,92.6102" Group="Expanded" UseManualLocation="True" />
+    <Node Id="Size_tWriteFile(constDataBuf&amp;Buf,ConstFs::path&amp;Path)1" Bounds="200.380599974934,338.970606149905,377.3,32.61" Label="size_t writeFile(const DataBuf&amp;, const fs::path&amp;)" UseManualLocation="True" />
+    <Node Id="Std::stringPath()Const" Bounds="781.403915805598,212.245428719755,186.99,32.61" Label="std::string path() const" UseManualLocation="True" />
+    <Node Id="Std::stringPath()Const1" Bounds="514.21317076979,-152.151670532226,186.99,32.61" Label="std::string path() const" />
+    <Node Id="Std::stringPath()Const2" Bounds="228.759819035437,-152.711683349609,186.99,32.61" Label="std::string path() const" />
+    <Node Id="Std::stringPath()ConstNoexcept=0" Bounds="488.881422931266,-347.577487323168,217.096666666667,32.61" Label="std::string path() const = 0" />
+    <Node Id="Std::stringPathOfFileUrl(constStd::string&amp;Url)" Bounds="1832.41311686198,210.677126862202,363.15,32.61" Label="std::string pathOfFileUrl(const std::string&amp; url)" UseManualLocation="True" />
+    <Node Id="Std::tuple&lt;std::string,Std::wstring&gt;OpenMode_" Category="DataMember" Bounds="795.763860873957,-58.1950741538543,372.903333333334,32.61" Label="std::tuple&lt;std::string, std::wstring&gt; openMode_" UseManualLocation="True" />
+    <Node Id="VoidSetPath(constFs::path&amp;Path)" Bounds="782.368335157811,274.855528719755,366.05,32.61" Label="void setPath(const std::filesystem::path&amp; path)" UseManualLocation="True" />
+    <Node Id="XPathIo" Category="Class" Bounds="1204.71027240532,484.33265269392,78.0599999999999,32.6100000000002" UseManualLocation="True" />
+  </Nodes>
+  <Links>
+    <Link Source="126e507d-f2d6-4a5d-87e2-cd54e63ea0701" Target="XPathIo" Bounds="1159.66963053385,522.009617879503,52.6973024073727,35.898035628393" />
+    <Link Source="6f3671a1-9f90-49f6-ab38-1a5f02f0c0f51" Target="Std::tuple&lt;std::string,Std::wstring&gt;OpenMode_" Bounds="1006.04353581467,-244.127134197998,190.523791606938,179.755778354686" />
+    <Link Source="7e8f8668-9692-4cc4-b043-4492da6369001" Target="Image::UniquePtrCreate(ImageTypeType,ConstFs::path&amp;Path)" Bounds="2041.59356929978,35.466094900139,328.760261338847,5.21112439559148" />
+    <Link Source="87288638-2ae7-4375-92c4-9873c6813fb61" Target="BasicIo::UniquePtrImageFactory::createIo(constStd::string&amp;Path,[[maybe_unused]]BoolUseCurl)" Bounds="1702.86170760996,133.245482463383,28.0397618413556,183.291650715327" />
+    <Link Source="A" Target="B" Bounds="62.0000004768372,-537.721439057861,46.2981263430402,0.667236758769036" />
+    <Link Source="A1" Target="C" Category="Constructs" Bounds="62.7710576057434,-474.028239591377,46.1656313123851,0.102657952480456" />
+    <Link Source="ACallsB" Target="A" Bounds="37.1224427532693,-591.784111328125,0.144121560912446,29.7853079925579" />
+    <Link Source="AConstructsC" Target="A1" Bounds="37.8186023729102,-448.778847672748,0.0816632308416345,43.4640210125915" />
+    <Link Source="AddedToCreateFileIoInstancesFromStd::filesystem::path" Target="BasicIo::UniquePtrCreateIo(constFs::path&amp;Path)" Bounds="1551.42096824382,-217.009138166791,92.0996910631832,163.516249588564" />
+    <Link Source="AddedToCreateFileIoInstancesFromStd::filesystem::path1" Target="Image::UniquePtrOpen(constFs::path&amp;Path)" Bounds="1958.46596058956,-227.861017411469,159.283585742029,96.818390302214" />
+    <Link Source="BasicIo" Target="Std::stringPath()ConstNoexcept=0" Category="Contains" />
+    <Link Source="BasicIo::UniquePtrCreateIo(constFs::path&amp;Path)" Target="FileIo" Category="Constructs" Bounds="1316.47686033103,-13.0412059188129,258.0949597641,50.9784643904863" />
+    <Link Source="BasicIo::UniquePtrImageFactory::createIo(constStd::string&amp;Path,[[maybe_unused]]BoolUseCurl)" Target="FileIo" Category="Constructs" Bounds="1316.6456413958,100.386953520851,130.772433962271,2.6188045132441" />
+    <Link Source="BasicIo::UniquePtrImageFactory::createIo(constStd::string&amp;Path,[[maybe_unused]]BoolUseCurl)" Target="Std::stringPathOfFileUrl(constStd::string&amp;Url)" Bounds="1742.1866408094,124.348980867839,220.201509644661,83.1488261791779" />
+    <Link Source="BasicIo::UniquePtrImageFactory::createIo(constStd::string&amp;Path,[[maybe_unused]]BoolUseCurl)" Target="XPathIo" Category="Constructs" Bounds="1269.46401246029,124.348980867839,410.634519498048,354.106171461745" />
+    <Link Source="ChangedToReturnATemporary" Target="Std::stringPath()ConstNoexcept=0" Bounds="637.225866657928,-469.504242493575,229.699451131786,117.819225340626" />
+    <Link Source="ChangedToTakeStd::filesystem::pathInsteadOfStd::string" Target="FileIo(constFs::path&amp;Path)" Bounds="581.53346487102,124.991846143387,204.953062346842,23.6133747842379" />
+    <Link Source="DataBufReadFile(constFs::path&amp;Path)1" Target="FileIo" Category="Constructs" Bounds="693.687990503123,396.948191111708,80.1111451249393,94.742415038197" />
+    <Link Source="DataBufReadFile(constFs::path&amp;Path)1" Target="IntOpen(constStd::tuple&lt;std::string,Std::wstring&gt;&amp;Mode);" Bounds="714.425370886104,373.919037721235,249.370660424733,117.77156842867" />
+    <Link Source="FileIo" Target="BasicIo" Bounds="649.654496782764,-288.574805466096,101.548692100699,102.468305562247" />
+    <Link Source="FileIo" Target="FileIo(constFs::path&amp;Path)" Category="Contains" />
+    <Link Source="FileIo" Target="FileIo::Impl" Category="Contains" />
+    <Link Source="FileIo" Target="IntOpen(constStd::tuple&lt;std::string,Std::wstring&gt;&amp;Mode);" Category="Contains" />
+    <Link Source="FileIo" Target="Std::stringPath()Const" Category="Contains" />
+    <Link Source="FileIo" Target="VoidSetPath(constFs::path&amp;Path)" Category="Contains" />
+    <Link Source="FileIo::Impl" Target="FILE*open(constStd::tuple&lt;std::string,Std::wstring&gt;&amp;Mode)" Category="Contains" />
+    <Link Source="FileIo::Impl" Target="Fs::pathPath_" Category="Contains" />
+    <Link Source="FileIo::Impl" Target="Impl(constFs::path&amp;Path)" Category="Contains" />
+    <Link Source="FileIo::Impl" Target="Std::tuple&lt;std::string,Std::wstring&gt;OpenMode_" Category="Contains" />
+    <Link Source="Image::UniquePtrCreate(ImageTypeType,ConstFs::path&amp;Path)" Target="FileIo" Category="Constructs" Bounds="1316.6260384083,61.7388782143353,188.900044108238,13.0520945323554" />
+    <Link Source="Image::UniquePtrOpen(constFs::path&amp;Path)" Target="BasicIo::UniquePtrCreateIo(constFs::path&amp;Path)" Bounds="1719.63591678467,-93.757926243491,150.414397061298,45.5008140691075" />
+    <Link Source="Image::UniquePtrOpen(constFs::path&amp;Path)" Target="Image::UniquePtrImageFactory::open(BasicIo::UniquePtrIo)" Bounds="1954.25975694752,-93.757926243491,80.5696237274444,43.3429266935789" />
+    <Link Source="ImageFactory" Target="BasicIo::UniquePtrCreateIo(constFs::path&amp;Path)" Category="Contains" />
+    <Link Source="ImageFactory" Target="BasicIo::UniquePtrImageFactory::createIo(constStd::string&amp;Path,[[maybe_unused]]BoolUseCurl)" Category="Contains" />
+    <Link Source="ImageFactory" Target="Image::UniquePtrCreate(ImageTypeType,ConstFs::path&amp;Path)" Category="Contains" />
+    <Link Source="ImageFactory" Target="Image::UniquePtrImageFactory::open(BasicIo::UniquePtrIo)" Category="Contains" />
+    <Link Source="ImageFactory" Target="Image::UniquePtrOpen(constFs::path&amp;Path)" Category="Contains" />
+    <Link Source="LooksFor'/'InTheFilePath" Target="Std::stringPathOfFileUrl(constStd::string&amp;Url)" Bounds="2033.13181806789,250.235384624346,49.6445937771555,60.3017422378559" />
+    <Link Source="MaintainsEitherAU8char_tOrAWchar_tPath" Target="Fs::pathPath_" Bounds="895.722052254295,-247.559189293271,40.5427294497701,118.240568911915" />
+    <Link Source="MemIo" Target="BasicIo" Bounds="600.337872859055,-285.979809594733,4.93488267584098,93.8280390625065" />
+    <Link Source="MemIo" Target="Std::stringPath()Const1" Category="Contains" />
+    <Link Source="RemoteIo" Target="BasicIo" Bounds="387.643423531786,-289.766116012502,137.052881284156,97.0543326628928" />
+    <Link Source="RemoteIo" Target="Std::stringPath()Const2" Category="Contains" />
+    <Link Source="Size_tWriteFile(constDataBuf&amp;Buf,ConstFs::path&amp;Path)1" Target="FileIo" Category="Constructs" Bounds="429.092058889118,211.264243640159,313.775111607736,127.706362509746" />
+    <Link Source="Size_tWriteFile(constDataBuf&amp;Buf,ConstFs::path&amp;Path)1" Target="IntOpen(constStd::tuple&lt;std::string,Std::wstring&gt;&amp;Mode);" Bounds="577.680599974934,354.351122185829,190.626227902053,0.464650504996314" />
+    <Link Source="XPathIo" Target="FileIo" Bounds="1189.57981320353,398.034901128931,45.5536828999725,86.2977636659905" />
+  </Links>
+  <Categories>
+    <Category Id="Class" Label="Class" Background="#FFCEF5CE" />
+    <Category Id="Comment" Label="Comment" Description="Represents a user defined comment on the diagram" CanBeDataDriven="True" IsProviderRoot="False" NavigationActionLabel="Comments" />
+    <Category Id="Constructor" Label="Constructor" Background="#FFEFCFFA" />
+    <Category Id="Constructs" Label="Constructs" Stroke="#FFA146C2" />
+    <Category Id="Contains" Label="Contains" Description="Whether the source of the link contains the target object" CanBeDataDriven="False" CanLinkedNodesBeDataDriven="True" IncomingActionLabel="Contained By" IsContainment="True" OutgoingActionLabel="Contains" />
+    <Category Id="DataMember" Label="DataMember" Background="#FFCDE7F7" />
+  </Categories>
+  <Properties>
+    <Property Id="Background" Label="Background" Description="The background color" DataType="System.Windows.Media.Brush" />
+    <Property Id="Bounds" DataType="System.Windows.Rect" />
+    <Property Id="CanBeDataDriven" Label="CanBeDataDriven" Description="CanBeDataDriven" DataType="System.Boolean" />
+    <Property Id="CanLinkedNodesBeDataDriven" Label="CanLinkedNodesBeDataDriven" Description="CanLinkedNodesBeDataDriven" DataType="System.Boolean" />
+    <Property Id="Expression" DataType="System.String" />
+    <Property Id="GraphDirection" DataType="Microsoft.VisualStudio.Diagrams.Layout.LayoutOrientation" />
+    <Property Id="Group" Label="Group" Description="Display the node as a group" DataType="Microsoft.VisualStudio.GraphModel.GraphGroupStyle" />
+    <Property Id="GroupLabel" DataType="System.String" />
+    <Property Id="IncomingActionLabel" Label="IncomingActionLabel" Description="IncomingActionLabel" DataType="System.String" />
+    <Property Id="IsContainment" DataType="System.Boolean" />
+    <Property Id="IsEnabled" DataType="System.Boolean" />
+    <Property Id="IsProviderRoot" Label="IsProviderRoot" Description="IsProviderRoot" DataType="System.Boolean" />
+    <Property Id="Label" Label="Label" Description="Displayable label of an Annotatable object" DataType="System.String" />
+    <Property Id="Layout" DataType="System.String" />
+    <Property Id="NavigationActionLabel" Label="NavigationActionLabel" Description="NavigationActionLabel" DataType="System.String" />
+    <Property Id="OutgoingActionLabel" Label="OutgoingActionLabel" Description="OutgoingActionLabel" DataType="System.String" />
+    <Property Id="Stroke" DataType="System.Windows.Media.Brush" />
+    <Property Id="TargetType" DataType="System.Type" />
+    <Property Id="UseManualLocation" DataType="System.Boolean" />
+    <Property Id="Value" DataType="System.String" />
+    <Property Id="ValueLabel" DataType="System.String" />
+    <Property Id="ZoomLevel" DataType="System.String" />
+  </Properties>
+  <Styles>
+    <Style TargetType="Link" GroupLabel="Constructs" ValueLabel="True">
+      <Condition Expression="HasCategory('Constructs')" />
+      <Setter Property="Stroke" Value="#FFA146C2" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="DataMember" ValueLabel="True">
+      <Condition Expression="HasCategory('DataMember')" />
+      <Setter Property="Background" Value="#FFCDE7F7" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Constructor" ValueLabel="True">
+      <Condition Expression="HasCategory('Constructor')" />
+      <Setter Property="Background" Value="#FFEFCFFA" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Class" ValueLabel="True">
+      <Condition Expression="HasCategory('Class')" />
+      <Setter Property="Background" Value="#FFCEF5CE" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Comment" ValueLabel="Has comment">
+      <Condition Expression="HasCategory('Comment')" />
+      <Setter Property="Background" Value="#FFFFFACD" />
+      <Setter Property="Stroke" Value="#FFE5C365" />
+      <Setter Property="StrokeThickness" Value="1" />
+      <Setter Property="NodeRadius" Value="2" />
+      <Setter Property="MaxWidth" Value="250" />
+    </Style>
+  </Styles>
+</DirectedGraph>

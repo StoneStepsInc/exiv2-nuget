@@ -46,6 +46,7 @@ options:
   * `EXIV2_BUILD_UNIT_TESTS=OFF`
   * `EXIV2_BUILD_FUZZ_TESTS=OFF`
   * `EXIV2_ENABLE_PNG=ON`
+  * `EXIV2_ENABLE_FILESYSTEM_ACCESS`
 
 ## Exiv2 Changes
 
@@ -74,6 +75,9 @@ this - `"hello-\U0001F30E.jpg"`.
 
 Note that `std::filesystem:path` requires C\+\+17 and will
 not compile in previous versions of C\+\+.
+
+See more details in the patch header and in the accompanying
+DGML file (requires DGML viewer installed in Visual Studio).
 
 ### `02-cmake-lists.patch`
 
@@ -173,21 +177,26 @@ remaining dependencies.
     Install-Package StoneSteps.zLib.VS2022.Static -ProjectName exiv2lib_int
     Install-Package StoneSteps.Expat.VS2022.Static -ProjectName exiv2-xmp
 
+For consistency, rename the newly-created `packages.config` to
+`packages.exiv2lib_int.config`. The one in the xmpsdk directory
+is created for a single project and can remain as `package.config`.
+
 These commands modify `.vcxproj` files to add build instructions
-from installed packages, as well as references to `packages.config`.
+from installed packages, as well as references to `packages*.config`
+files.
 
 Generate patches for all three `.vcxproj` files in the same
 way using the base installation directory saved earlier.
 
-    devops\create-vs-nuget-patches ^
-        exiv2-0.28.0-Source_base ^
-        exiv2-0.28.0-Source
+    devops\create-vs-nuget-patches exiv2-0.28.3_base exiv2-0.28.3
 
 Note that `.vcxproj` files are expected to use CRLF line endings,
-but `patch` gets confused when it finds mixed line endings and
-having LF only works out most optimally. Visual Studio 2022 and
-build tools that come with it will accept these files with LF
-line endings.
+but `patch` may get confused when it finds mixed line endings,
+which requires `--binary` option in some commands when patching.
+Because of that, make sure not to allow your IDE to correct CRLF
+line endings to LF when opening these patches in the editor, as
+patch constructs are expected to contain LF line endings and
+chunks of `.vcxproj` files will have CRLF. This is expected.
 
 Edit the generated patch file to make paths at the top to use
 forward slashes for path segment separators, remove quotes and

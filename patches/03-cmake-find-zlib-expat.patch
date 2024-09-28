@@ -1,8 +1,17 @@
+Date:   Tue Oct 10 19:45:25 2023 -0400
+
+    Disabled CMake's built-in package finder for select packages
+    
+    * CMake's find_package is not aware of Nuget dependencies and
+      on Windows checks for packages in odd places, such as under
+      _Program Files_. All such checks were disabled for packages
+      that will be installed via Nuget - zLib and Expat.
+
 diff --git a/cmake/findDependencies.cmake b/cmake/findDependencies.cmake
-index 1075c3031..33849b724 100644
+index b0897c323..82eeece27 100644
 --- a/cmake/findDependencies.cmake
 +++ b/cmake/findDependencies.cmake
-@@ -43,7 +43,7 @@ if (APPLE)
+@@ -45,7 +45,7 @@ if (APPLE)
  endif()
  
  if( EXIV2_ENABLE_PNG )
@@ -11,7 +20,7 @@ index 1075c3031..33849b724 100644
  endif( )
  
  if( EXIV2_ENABLE_BMFF AND EXIV2_ENABLE_BROTLI )
-@@ -60,7 +60,7 @@ if (EXIV2_ENABLE_XMP AND EXIV2_ENABLE_EXTERNAL_XMP)
+@@ -62,7 +62,7 @@ if (EXIV2_ENABLE_XMP AND EXIV2_ENABLE_EXTERNAL_XMP)
      message(FATAL_ERROR "EXIV2_ENABLE_XMP AND EXIV2_ENABLE_EXTERNAL_XMP are mutually exclusive.  You can only choose one of them")
  else()
      if (EXIV2_ENABLE_XMP)
@@ -21,10 +30,10 @@ index 1075c3031..33849b724 100644
          find_package(XmpSdk REQUIRED)
      endif ()
 diff --git a/cmake/generateConfigFile.cmake b/cmake/generateConfigFile.cmake
-index 49c9a10f6..5717fb898 100644
+index 3dd2fc934..6c49b6868 100644
 --- a/cmake/generateConfigFile.cmake
 +++ b/cmake/generateConfigFile.cmake
-@@ -20,7 +20,7 @@ else()
+@@ -21,7 +21,7 @@ else()
      set(EXV_HAVE_XMP_TOOLKIT OFF)
  endif()
  set(EXV_HAVE_ICONV       ${ICONV_FOUND})
@@ -32,18 +41,18 @@ index 49c9a10f6..5717fb898 100644
 +set(EXV_HAVE_LIBZ        TRUE)
  set(EXV_HAVE_BROTLI      ${BROTLI_FOUND})
  
- check_cxx_symbol_exists(strerror_r  string.h       EXV_HAVE_STRERROR_R )
+ if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.30.0")
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 3de4fec56..076e17860 100644
+index 8fe7366c6..cdfa7ba83 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
-@@ -179,15 +179,15 @@ set_target_properties( exiv2lib_int PROPERTIES
+@@ -176,15 +176,15 @@ set_target_properties( exiv2lib_int PROPERTIES
  )
  
  # NOTE: Cannot use target_link_libraries on OBJECT libraries with old versions of CMake
 -target_include_directories(exiv2lib_int PRIVATE ${ZLIB_INCLUDE_DIR})
 +#target_include_directories(exiv2lib_int PRIVATE ${ZLIB_INCLUDE_DIR})
- target_include_directories(exiv2lib SYSTEM PRIVATE 
+ target_include_directories(exiv2lib SYSTEM PRIVATE
      $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/xmpsdk/include>
  )
  
@@ -57,7 +66,7 @@ index 3de4fec56..076e17860 100644
  endif()
  
  if (EXIV2_ENABLE_XMP)
-@@ -238,8 +238,8 @@ else()
+@@ -233,8 +233,8 @@ else()
  endif()
  
  if( EXIV2_ENABLE_PNG )
@@ -68,26 +77,3 @@ index 3de4fec56..076e17860 100644
  endif()
  
  if( EXIV2_ENABLE_BMFF AND BROTLI_FOUND )
-diff --git a/xmpsdk/CMakeLists.txt b/xmpsdk/CMakeLists.txt
-index 9c148a617..43f166bb1 100644
---- a/xmpsdk/CMakeLists.txt
-+++ b/xmpsdk/CMakeLists.txt
-@@ -26,10 +26,14 @@ add_library(exiv2-xmp OBJECT
-     include/XMP_Version.h
- )
- 
--target_link_libraries(exiv2-xmp
--    PRIVATE 
--    EXPAT::EXPAT
--)
-+#
-+# EXPAT_LIBRARY is set by CMake via find_package, which is
-+# disabled in this project in favor of using Nuget packages.
-+#
-+#target_link_libraries(exiv2-xmp
-+#    PRIVATE 
-+#    EXPAT::EXPAT
-+#)
- 
- target_include_directories(exiv2-xmp SYSTEM
-     PRIVATE 

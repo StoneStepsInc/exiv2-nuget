@@ -7,19 +7,20 @@ if "%~1" == "" (
   goto :EOF
 )
 
-set PKG_VER=0.28.0
+set PKG_VER=0.28.3
 set PKG_REV=%~1
 
 set EXIV2_FNAME=exiv2-%PKG_VER%-Source.tar.gz
-set EXIV2_DNAME=exiv2-%PKG_VER%-Source
-set EXIV2_SHA256=89af3b5ef7277753ef7a7b5374ae017c6b9e304db3b688f1948e73e103491f3d
+set EXIV2_DNAME=exiv2-%PKG_VER%
+set EXIV2_SHA256=1315e17d454bf4da3cc0edb857b1d2c143670f3485b537d0f946d9ed31d87b70
 
-set PATCH=c:\Program Files\Git\usr\bin\patch.exe
-set SEVENZIP_EXE=c:\Program Files\7-Zip\7z.exe
-set VCVARSALL=C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall
+set PATCH=%PROGRAMFILES%\Git\usr\bin\patch.exe
+set SEVENZIP_EXE=%PROGRAMFILES%\7-Zip\7z.exe
+set VCVARSALL=%PROGRAMFILES%\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall
 
 if NOT EXIST %EXIV2_FNAME% (
-  curl --location --output %EXIV2_FNAME% https://github.com/Exiv2/exiv2/releases/download/v%PKG_VER%/%EXIV2_FNAME%
+  rem mimic the original source package, which was dropped starting with 0.28.1
+  curl --location --output %EXIV2_FNAME% https://github.com/Exiv2/exiv2/archive/refs/tags/v%PKG_VER%.tar.gz
 )
 
 "%SEVENZIP_EXE%" h -scrcSHA256 %EXIV2_FNAME% | findstr /C:"SHA256 for data" | call devops\check-sha256 "%EXIV2_SHA256%"
@@ -35,11 +36,12 @@ cd %EXIV2_DNAME%
 
 rem
 rem Patch the source to work around build problems described for
-rem each patch in README.md.
+rem each patch in README.md. Use --binary where there's a mix of
+rem LF and CRLF line endings.
 rem
 
 "%PATCH%" -p1 --unified --input ..\patches\01-wide-char-paths.patch
-"%PATCH%" -p1 --unified --input ..\patches\02-cmake-lists.patch
+"%PATCH%" -p1 --unified --binary --input ..\patches\02-cmake-lists.patch
 "%PATCH%" -p1 --unified --input ..\patches\03-cmake-find-zlib-expat.patch
 
 call "%VCVARSALL%" x64
@@ -60,14 +62,17 @@ cmake -S . -B build -G "Visual Studio 17 2022" -A x64 ^
     -DEXIV2_BUILD_EXIV2_COMMAND=OFF ^
     -DEXIV2_BUILD_UNIT_TESTS=OFF ^
     -DEXIV2_BUILD_FUZZ_TESTS=OFF ^
-    -DEXIV2_ENABLE_PNG=ON
+    -DEXIV2_ENABLE_PNG=ON ^
+    -DEXIV2_ENABLE_FILESYSTEM_ACCESS=ON
+
+rem goto :EOF
 
 rem
 rem See README.md for more information about these patches.
 rem
-"%PATCH%" -p1 --unified --input ..\patches\20-vs-nuget-exiv2lib.patch
-"%PATCH%" -p1 --unified --input ..\patches\21-vs-nuget-exiv2lib_int.patch
-"%PATCH%" -p1 --unified --input ..\patches\22-vs-nuget-exiv2-xmp.patch
+"%PATCH%" -p1 --unified --binary --input ..\patches\20-vs-nuget-exiv2lib.patch
+"%PATCH%" -p1 --unified --binary --input ..\patches\21-vs-nuget-exiv2lib_int.patch
+"%PATCH%" -p1 --unified --binary --input ..\patches\22-vs-nuget-exiv2-xmp.patch
 
 rem
 rem This command downloads and sets up all packages, but won't

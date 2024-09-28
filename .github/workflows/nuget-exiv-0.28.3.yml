@@ -8,7 +8,7 @@
 # to restart build numbers from `1`. This is necessary because GitHub
 # maintains build numbers per workflow file name.
 #
-name: exiv2 v0.28.0-1
+name: exiv2 v0.28.3-1
 
 #
 # When `publish-package` is set to `yes`, the workflow will build
@@ -51,7 +51,7 @@ on:
 # adding or removing files, changing any text in README files, etc.
 #
 env:
-  PKG_VER: 0.28.0
+  PKG_VER: 0.28.3
   PKG_REV: 1
   BUILD_NUMBER: ${{ github.run_number }}
 
@@ -62,12 +62,12 @@ env:
   # or to define them in each step where the source directory is
   # referenced, which is what's done in this pipeline (`EXIV2_DNAME`).
   #
-  EXIV2_FNAME: exiv2-0.28.0-Source.tar.gz
-  EXIV2_DNAME: exiv2-0.28.0-Source
-  EXIV2_SHA256: 89af3b5ef7277753ef7a7b5374ae017c6b9e304db3b688f1948e73e103491f3d
+  EXIV2_FNAME: exiv2-0.28.3-Source.tar.gz
+  EXIV2_DNAME: exiv2-0.28.3
+  EXIV2_SHA256: 1315e17d454bf4da3cc0edb857b1d2c143670f3485b537d0f946d9ed31d87b70
 
   # for VS Community Edition, replace `Enterprise` with `Community` in the path
-  VCVARSALL: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall'
+  VCVARSALL: '%PROGRAMFILES%\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall'
 
   # Nuget Gallery (www.nuget.org) publish URL
   NUGET_PUB_URL: https://api.nuget.org/v3/index.json
@@ -83,7 +83,7 @@ jobs:
     
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Download Exiv2
       run: curl --location --output ${{ env.EXIV2_FNAME }} https://github.com/Exiv2/exiv2/releases/download/v${{ env.PKG_VER }}/${{ env.EXIV2_FNAME }}
@@ -121,7 +121,7 @@ jobs:
             -DEXIV2_BUILD_UNIT_TESTS=OFF ^
             -DEXIV2_BUILD_FUZZ_TESTS=OFF ^
             -DEXIV2_ENABLE_PNG=ON ^
-            -DEXIV2_ENABLE_WIN_UNICODE=ON
+            -DEXIV2_ENABLE_FILESYSTEM_ACCESS=ON
 
     - name: Patch CMake/VS projects
       working-directory: ${{ env.EXIV2_DNAME }}
@@ -178,7 +178,7 @@ jobs:
 
     - name: Upload CI Nuget package
       if: ${{ github.event.inputs.publish-package != 'yes' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Exiv2 CI Nuget package
         path: StoneSteps.Exiv2.VS2022.Static.${{ env.PKG_VER }}.${{ env.PKG_REV }}-ci.${{ env.BUILD_NUMBER }}.nupkg

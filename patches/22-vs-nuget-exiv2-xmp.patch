@@ -1,5 +1,5 @@
 --- a/build/xmpsdk/exiv2-xmp.vcxproj	2024-09-24 19:44:32.152565600 -0400
-+++ b/build/xmpsdk/exiv2-xmp.vcxproj	2024-09-24 21:49:06.339685300 -0400
++++ b/build/xmpsdk/exiv2-xmp.vcxproj	2024-09-28 19:54:25.986992400 -0400
 @@ -1,5 +1,6 @@
  ﻿<?xml version="1.0" encoding="utf-8"?>
  <Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
@@ -7,7 +7,7 @@
    <PropertyGroup>
      <PreferredToolArchitecture>x64</PreferredToolArchitecture>
    </PropertyGroup>
-@@ -34,6 +35,7 @@
+@@ -34,21 +35,25 @@
      <ConfigurationType>StaticLibrary</ConfigurationType>
      <CharacterSet>MultiByte</CharacterSet>
      <PlatformToolset>v143</PlatformToolset>
@@ -15,7 +15,25 @@
    </PropertyGroup>
    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
      <ConfigurationType>StaticLibrary</ConfigurationType>
-@@ -310,6 +312,7 @@
+     <CharacterSet>MultiByte</CharacterSet>
+     <PlatformToolset>v143</PlatformToolset>
++    <UseDebugLibraries>false</UseDebugLibraries>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+     <ConfigurationType>StaticLibrary</ConfigurationType>
+     <CharacterSet>MultiByte</CharacterSet>
+     <PlatformToolset>v143</PlatformToolset>
++    <UseDebugLibraries>false</UseDebugLibraries>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+     <ConfigurationType>StaticLibrary</ConfigurationType>
+     <CharacterSet>MultiByte</CharacterSet>
+     <PlatformToolset>v143</PlatformToolset>
++    <UseDebugLibraries>false</UseDebugLibraries>
+   </PropertyGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+   <ImportGroup Label="ExtensionSettings">
+@@ -310,6 +315,7 @@
      </None>
      <ClInclude Include="C:\projects\nuget\exiv2-nuget\exiv2-0.28.3\xmpsdk\include\XMPSDK.hpp" />
      <ClInclude Include="C:\projects\nuget\exiv2-nuget\exiv2-0.28.3\xmpsdk\include\XMP_Version.h" />
@@ -23,7 +41,7 @@
    </ItemGroup>
    <ItemGroup>
      <ProjectReference Include="C:\projects\nuget\exiv2-nuget\exiv2-0.28.3\build\ZERO_CHECK.vcxproj">
-@@ -321,5 +324,13 @@
+@@ -321,5 +327,13 @@
    </ItemGroup>
    <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
    <ImportGroup Label="ExtensionTargets">

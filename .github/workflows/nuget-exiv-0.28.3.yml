@@ -100,7 +100,7 @@ jobs:
       run: |
         PATH %PATH:C:\Strawberry\c\bin;=%
         patch -p1 --unified --input ..\patches\01-wide-char-paths.patch
-        patch -p1 --unified --input ..\patches\02-cmake-lists.patch
+        patch -p1 --unified --binary --input ..\patches\02-cmake-lists.patch
         patch -p1 --unified --input ..\patches\03-cmake-find-zlib-expat.patch
 
     - name: Generate projects
@@ -127,9 +127,9 @@ jobs:
       working-directory: ${{ env.EXIV2_DNAME }}
       run: |
         PATH %PATH:C:\Strawberry\c\bin;=%
-        patch -p1 --unified --input ..\patches\20-vs-nuget-exiv2lib.patch
-        patch -p1 --unified --input ..\patches\21-vs-nuget-exiv2lib_int.patch
-        patch -p1 --unified --input ..\patches\22-vs-nuget-exiv2-xmp.patch
+        patch -p1 --unified --binary --input ..\patches\20-vs-nuget-exiv2lib.patch
+        patch -p1 --unified --binary --input ..\patches\21-vs-nuget-exiv2lib_int.patch
+        patch -p1 --unified --binary --input ..\patches\22-vs-nuget-exiv2-xmp.patch
 
     - name: Install Nuget dependencies
       working-directory: ${{ env.EXIV2_DNAME }}

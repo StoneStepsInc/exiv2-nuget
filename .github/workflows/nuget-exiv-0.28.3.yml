@@ -82,7 +82,8 @@ jobs:
     runs-on: windows-2022
     
     steps:
-    - name: Set autocrlf=false
+      # patches will fail to apply if auto-CRLF is enabled in Git
+    - name: Disable autocrlf
       run: |
         git config --global core.autocrlf false
 
@@ -91,13 +92,13 @@ jobs:
 
     - name: Download Exiv2
       run: curl --location --output ${{ env.EXIV2_FNAME }} https://github.com/Exiv2/exiv2/archive/refs/tags/v${{ env.PKG_VER }}.tar.gz
-    
+
     - name: Verify Exiv2 checksum
       run: 7z h -scrcSHA256 ${{ env.EXIV2_FNAME }} | findstr /C:"SHA256 for data" | call devops\check-sha256 "${{ env.EXIV2_SHA256 }}"
 
     - name: Extract Exiv2
       run: |
-        tar xzf ${{ env.EXIV2_FNAME }}
+        tar -xzf ${{ env.EXIV2_FNAME }}
 
     - name: Patch source
       working-directory: ${{ env.EXIV2_DNAME }}
@@ -126,6 +127,12 @@ jobs:
             -DEXIV2_BUILD_FUZZ_TESTS=OFF ^
             -DEXIV2_ENABLE_PNG=ON ^
             -DEXIV2_ENABLE_FILESYSTEM_ACCESS=ON
+
+    - name: Upload CMake output
+      uses: actions/upload-artifact@v4
+      with:
+        name: CMake output
+        path: ${{ env.EXIV2_DNAME }}
 
     - name: Patch CMake/VS projects
       working-directory: ${{ env.EXIV2_DNAME }}

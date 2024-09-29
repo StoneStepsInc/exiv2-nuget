@@ -7,13 +7,8 @@
    <PropertyGroup>
      <PreferredToolArchitecture>x64</PreferredToolArchitecture>
    </PropertyGroup>
-@@ -341,7 +342,18 @@
-       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-     </ProjectReference>
+@@ -343,5 +344,13 @@
    </ItemGroup>
-+  <ItemGroup>
-+    <None Include="packages.exiv2lib_int.config" />
-+  </ItemGroup>
    <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
    <ImportGroup Label="ExtensionTargets">
 +    <Import Project="..\packages\StoneSteps.zLib.VS2022.Static.1.3.1.1\build\native\StoneSteps.zLib.VS2022.Static.targets" Condition="Exists('..\packages\StoneSteps.zLib.VS2022.Static.1.3.1.1\build\native\StoneSteps.zLib.VS2022.Static.targets')" />

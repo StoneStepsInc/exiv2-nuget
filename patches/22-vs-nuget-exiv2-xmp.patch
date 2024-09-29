@@ -7,15 +7,7 @@
    <PropertyGroup>
      <PreferredToolArchitecture>x64</PreferredToolArchitecture>
    </PropertyGroup>
-@@ -310,6 +311,7 @@
-     </None>
-     <ClInclude Include="C:\projects\nuget\exiv2-nuget\exiv2-0.28.3\xmpsdk\include\XMPSDK.hpp" />
-     <ClInclude Include="C:\projects\nuget\exiv2-nuget\exiv2-0.28.3\xmpsdk\include\XMP_Version.h" />
-+    <None Include="packages.config" />
-   </ItemGroup>
-   <ItemGroup>
-     <ProjectReference Include="C:\projects\nuget\exiv2-nuget\exiv2-0.28.3\build\ZERO_CHECK.vcxproj">
-@@ -321,5 +323,13 @@
+@@ -321,5 +322,13 @@
    </ItemGroup>
    <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
    <ImportGroup Label="ExtensionTargets">

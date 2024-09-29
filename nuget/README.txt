@@ -20,7 +20,7 @@ inherit this property.
 
 Do not install this package if your projects use debug configurations
 without UseDebugLibraries. Note that CMake-generated Visual Studio
-projects will not emit this property.
+projects will not emit this property before CMake v3.30.0.
 
 The Exiv2 libraries call functions in these Windows libraries,
 which need to be added as linker input to the Visual Studio

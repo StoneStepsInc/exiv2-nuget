@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <string>
 #include <format>    // C++20 (std::format)
+#include <filesystem>
 
 using namespace std::literals::string_literals;
 using namespace std::literals::string_view_literals;
@@ -202,7 +203,7 @@ int main(int argc, const char* argv[])
       Exiv2::XmpParser::initialize();
       Exiv2::enableBMFF();
 
-      Exiv2::Image::UniquePtr image = Exiv2::ImageFactory::open(argv[1], false);
+      Exiv2::Image::UniquePtr image = Exiv2::ImageFactory::open(std::filesystem::path(argv[1]));
 
       if(!image)
          throw std::runtime_error(std::format("Cannot open file {:s}"sv, argv[1]));

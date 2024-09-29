@@ -113,7 +113,6 @@ jobs:
       run: |
         PATH %PATH:C:\Strawberry\c\bin;=%
         call "${{ env.VCVARSALL }}" x64
-        cmake --version
         cmake -S . -B build -G "Visual Studio 17 2022" -A x64 ^
             -DBUILD_SHARED_LIBS=OFF ^
             -DEXIV2_ENABLE_WEBREADY=OFF ^
@@ -128,12 +127,6 @@ jobs:
             -DEXIV2_BUILD_FUZZ_TESTS=OFF ^
             -DEXIV2_ENABLE_PNG=ON ^
             -DEXIV2_ENABLE_FILESYSTEM_ACCESS=ON
-
-    - name: Upload CMake output
-      uses: actions/upload-artifact@v4
-      with:
-        name: CMake output
-        path: ${{ env.EXIV2_DNAME }}
 
     - name: Patch CMake/VS projects
       working-directory: ${{ env.EXIV2_DNAME }}

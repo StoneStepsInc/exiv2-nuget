@@ -7,6 +7,9 @@
 #include <format>    // C++20 (std::format)
 #include <filesystem>
 
+#include <locale>
+#include <clocale>
+
 using namespace std::literals::string_literals;
 using namespace std::literals::string_view_literals;
 
@@ -198,6 +201,33 @@ int main(int argc, const char* argv[])
       fprintf(stderr, "Usage: sample-exiv2 image-path\n");
       return EXIT_FAILURE;
    }
+
+   //
+   // This will work for UTF-8 strings received via other means, but
+   // not from the command line - there's no way to pass emojis into
+   // the narrow character `main`, but once the string is in the app
+   // at run time, it will go through exiv2 and CRT as a UTF-8 string.
+   // 
+   // Uncomment the locale calls below to test a hardcoded file name
+   // like these in the `open` call below.
+   // 
+   // emoji: "hello-\xF0\x9F\x8C\x8E.jpg"
+   // Kanji: "hello-\xE4\xB8\x96\xE7\x95\x8C.jpg"
+   // 
+   //std::locale::global(std::locale("en_US.UTF-8"));
+   //std::setlocale(LC_CTYPE, "en_US.UTF-8");
+   // 
+   // Either of these forms will work for 2-byte UTF-8 characters that
+   // are represented in the Win-1252 code page, such as the YEN character,
+   // and will work for command-line arguments (same as default for Western
+   // setups).
+   // 
+   //std::locale::global(std::locale("en_US"));
+   //std::setlocale(LC_CTYPE, "en_US");
+   // 
+   //std::locale::global(std::locale(".1252"));
+   //std::setlocale(LC_CTYPE, ".1252");
+   //
 
    try {
       Exiv2::XmpParser::initialize();

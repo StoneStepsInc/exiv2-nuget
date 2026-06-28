@@ -131,10 +131,10 @@ index 71155136d..00ee2b91d 100644
  /*!
    @brief The callback function is called by libcurl to write the data
 diff --git a/include/exiv2/image.hpp b/include/exiv2/image.hpp
-index 629a8a4fd..4ab9dcfc1 100644
+index 344d69840..18e44bc0f 100644
 --- a/include/exiv2/image.hpp
 +++ b/include/exiv2/image.hpp
-@@ -523,6 +523,11 @@ class EXIV2API ImageFactory {
+@@ -534,6 +534,11 @@ class EXIV2API ImageFactory {
     */
    static BasicIo::UniquePtr createIo(const std::string& path, bool useCurl = true);
  
@@ -146,7 +146,7 @@ index 629a8a4fd..4ab9dcfc1 100644
    /*!
      @brief Create an Image subclass of the appropriate type by reading
          the specified file. %Image type is derived from the file
-@@ -538,6 +543,12 @@ class EXIV2API ImageFactory {
+@@ -549,6 +554,12 @@ class EXIV2API ImageFactory {
     */
    static Image::UniquePtr open(const std::string& path, bool useCurl = true);
  
@@ -159,7 +159,7 @@ index 629a8a4fd..4ab9dcfc1 100644
    /*!
      @brief Create an Image subclass of the appropriate type by reading
          the provided memory. %Image type is derived from the memory
-@@ -577,7 +588,7 @@ class EXIV2API ImageFactory {
+@@ -588,7 +599,7 @@ class EXIV2API ImageFactory {
          type.
      @throw Error If the image type is not supported.
     */
@@ -495,10 +495,10 @@ index 66e78831d..84efa5918 100644
    return file.write(buf.c_data(), buf.size());
  }
 diff --git a/src/image.cpp b/src/image.cpp
-index f06660cf7..1f178f8c0 100644
+index 2e9cee87d..7d6043fea 100644
 --- a/src/image.cpp
 +++ b/src/image.cpp
-@@ -801,10 +801,23 @@ BasicIo::UniquePtr ImageFactory::createIo(const std::string& path, [[maybe_unuse
+@@ -817,10 +817,23 @@ BasicIo::UniquePtr ImageFactory::createIo(const std::string& path, [[maybe_unuse
  #endif
  }  // ImageFactory::createIo
  
@@ -523,7 +523,7 @@ index f06660cf7..1f178f8c0 100644
    return image;
  }
  
-@@ -828,11 +841,11 @@ Image::UniquePtr ImageFactory::open(BasicIo::UniquePtr io) {
+@@ -844,11 +857,11 @@ Image::UniquePtr ImageFactory::open(BasicIo::UniquePtr io) {
  }
  
  #ifdef EXV_ENABLE_FILESYSTEM

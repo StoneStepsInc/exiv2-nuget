@@ -7,12 +7,12 @@ if "%~1" == "" (
   goto :EOF
 )
 
-set PKG_VER=0.28.3
+set PKG_VER=0.28.8
 set PKG_REV=%~1
 
 set EXIV2_FNAME=exiv2-%PKG_VER%-Source.tar.gz
 set EXIV2_DNAME=exiv2-%PKG_VER%
-set EXIV2_SHA256=1315e17d454bf4da3cc0edb857b1d2c143670f3485b537d0f946d9ed31d87b70
+set EXIV2_SHA256=ea51b0609f58a9afa063b60daa1539948b62247721e154f4fff0ad3aec9f9756
 
 set PATCH=%PROGRAMFILES%\Git\usr\bin\patch.exe
 set SEVENZIP_EXE=%PROGRAMFILES%\7-Zip\7z.exe
@@ -39,7 +39,6 @@ rem Patch the source to work around build problems described for
 rem each patch in README.md. Use --binary where there's a mix of
 rem LF and CRLF line endings.
 rem
-
 "%PATCH%" -p1 --unified --input ..\patches\01-wide-char-paths.patch
 "%PATCH%" -p1 --unified --binary --input ..\patches\02-cmake-lists.patch
 "%PATCH%" -p1 --unified --input ..\patches\03-cmake-find-zlib-expat.patch
@@ -65,6 +64,14 @@ cmake -S . -B build -G "Visual Studio 17 2022" -A x64 ^
     -DEXIV2_ENABLE_PNG=ON ^
     -DEXIV2_ENABLE_FILESYSTEM_ACCESS=ON
 
+rem 
+rem Uncomment this line and run it once to produce the base version
+rem of CMake-generated project. Rename it as %PKG_VER%-base.
+rem
+rem Run with this line one more to install Nuget packages as described
+rem in README.txt and run create-vs-nuget-patches.bat to generate the
+rem patches used below. After this comment out this line.
+rem
 rem goto :EOF
 
 rem
@@ -86,7 +93,7 @@ rem
 rem Build x64 Debug/Release
 rem 
 cmake --build build --config Debug
-cmake --build build --config Release
+cmake --build build --config RelWithDebInfo
 
 rem
 rem Collect artifacts
@@ -109,9 +116,9 @@ xcopy /Y build\src\exiv2lib_int.dir\Debug\exiv2lib_int.pdb ..\nuget\build\native
 xcopy /Y build\xmpsdk\exiv2-xmp.dir\Debug\exiv2-xmp.pdb ..\nuget\build\native\lib\x64\Debug\
 
 mkdir ..\nuget\build\native\lib\x64\Release
-xcopy /Y build\lib\Release\* ..\nuget\build\native\lib\x64\Release\
-xcopy /Y build\src\exiv2lib_int.dir\Release\exiv2lib_int.pdb ..\nuget\build\native\lib\x64\Release\
-xcopy /Y build\xmpsdk\exiv2-xmp.dir\Release\exiv2-xmp.pdb ..\nuget\build\native\lib\x64\Release\
+xcopy /Y build\lib\RelWithDebInfo\* ..\nuget\build\native\lib\x64\Release\
+xcopy /Y build\src\exiv2lib_int.dir\RelWithDebInfo\exiv2lib_int.pdb ..\nuget\build\native\lib\x64\Release\
+xcopy /Y build\xmpsdk\exiv2-xmp.dir\RelWithDebInfo\exiv2-xmp.pdb ..\nuget\build\native\lib\x64\Release\
 
 mkdir ..\nuget\build\native\include\exiv2
 xcopy /Y /S include\exiv2\* ..\nuget\build\native\include\exiv2\

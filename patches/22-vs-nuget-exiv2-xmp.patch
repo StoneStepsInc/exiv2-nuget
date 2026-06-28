@@ -1,24 +1,24 @@
---- a/build/xmpsdk/exiv2-xmp.vcxproj	2024-09-24 19:44:32.152565600 -0400
-+++ b/build/xmpsdk/exiv2-xmp.vcxproj	2024-09-28 20:08:59.700223900 -0400
+--- exiv2-0.28.8-base\build\xmpsdk\exiv2-xmp.vcxproj	2026-06-28 14:32:08.337840300 -0400
++++ exiv2-0.28.8\build\xmpsdk\exiv2-xmp.vcxproj	2026-06-28 14:43:53.669790100 -0400
 @@ -1,5 +1,6 @@
  ﻿<?xml version="1.0" encoding="utf-8"?>
  <Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-+  <Import Project="..\packages\StoneSteps.Expat.VS2022.Static.2.6.3.1\build\native\StoneSteps.Expat.VS2022.Static.props" Condition="Exists('..\packages\StoneSteps.Expat.VS2022.Static.2.6.3.1\build\native\StoneSteps.Expat.VS2022.Static.props')" />
++  <Import Project="..\packages\StoneSteps.Expat.VS2022.Static.2.8.1.1\build\native\StoneSteps.Expat.VS2022.Static.props" Condition="Exists('..\packages\StoneSteps.Expat.VS2022.Static.2.8.1.1\build\native\StoneSteps.Expat.VS2022.Static.props')" />
    <PropertyGroup>
      <PreferredToolArchitecture>x64</PreferredToolArchitecture>
    </PropertyGroup>
-@@ -321,5 +322,13 @@
+@@ -338,5 +339,13 @@
    </ItemGroup>
    <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
    <ImportGroup Label="ExtensionTargets">
-+    <Import Project="..\packages\StoneSteps.Expat.VS2022.Static.2.6.3.1\build\native\StoneSteps.Expat.VS2022.Static.targets" Condition="Exists('..\packages\StoneSteps.Expat.VS2022.Static.2.6.3.1\build\native\StoneSteps.Expat.VS2022.Static.targets')" />
++    <Import Project="..\packages\StoneSteps.Expat.VS2022.Static.2.8.1.1\build\native\StoneSteps.Expat.VS2022.Static.targets" Condition="Exists('..\packages\StoneSteps.Expat.VS2022.Static.2.8.1.1\build\native\StoneSteps.Expat.VS2022.Static.targets')" />
    </ImportGroup>
 +  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
 +    <PropertyGroup>
 +      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
 +    </PropertyGroup>
-+    <Error Condition="!Exists('..\packages\StoneSteps.Expat.VS2022.Static.2.6.3.1\build\native\StoneSteps.Expat.VS2022.Static.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\StoneSteps.Expat.VS2022.Static.2.6.3.1\build\native\StoneSteps.Expat.VS2022.Static.props'))" />
-+    <Error Condition="!Exists('..\packages\StoneSteps.Expat.VS2022.Static.2.6.3.1\build\native\StoneSteps.Expat.VS2022.Static.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\StoneSteps.Expat.VS2022.Static.2.6.3.1\build\native\StoneSteps.Expat.VS2022.Static.targets'))" />
++    <Error Condition="!Exists('..\packages\StoneSteps.Expat.VS2022.Static.2.8.1.1\build\native\StoneSteps.Expat.VS2022.Static.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\StoneSteps.Expat.VS2022.Static.2.8.1.1\build\native\StoneSteps.Expat.VS2022.Static.props'))" />
++    <Error Condition="!Exists('..\packages\StoneSteps.Expat.VS2022.Static.2.8.1.1\build\native\StoneSteps.Expat.VS2022.Static.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\StoneSteps.Expat.VS2022.Static.2.8.1.1\build\native\StoneSteps.Expat.VS2022.Static.targets'))" />
 +  </Target>
  </Project>
 \ No newline at end of file

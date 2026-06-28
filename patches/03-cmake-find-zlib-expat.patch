@@ -43,17 +43,10 @@ index 3dd2fc934..6c49b6868 100644
  
  if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.30.0")
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 8fe7366c6..cdfa7ba83 100644
+index f74aafec0..c5f700d6b 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
-@@ -176,15 +176,15 @@ set_target_properties( exiv2lib_int PROPERTIES
- )
- 
- # NOTE: Cannot use target_link_libraries on OBJECT libraries with old versions of CMake
--target_include_directories(exiv2lib_int PRIVATE ${ZLIB_INCLUDE_DIR})
-+#target_include_directories(exiv2lib_int PRIVATE ${ZLIB_INCLUDE_DIR})
- target_include_directories(exiv2lib SYSTEM PRIVATE
-     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/xmpsdk/include>
+@@ -181,9 +181,9 @@ target_include_directories(exiv2lib SYSTEM PRIVATE
  )
  
  if (EXIV2_ENABLE_XMP OR EXIV2_ENABLE_EXTERNAL_XMP)
@@ -66,13 +59,15 @@ index 8fe7366c6..cdfa7ba83 100644
  endif()
  
  if (EXIV2_ENABLE_XMP)
-@@ -233,8 +233,8 @@ else()
+@@ -232,9 +232,9 @@ else()
  endif()
  
  if( EXIV2_ENABLE_PNG )
 -    target_link_libraries( exiv2lib PRIVATE ZLIB::ZLIB)
+-    target_include_directories(exiv2lib_int PRIVATE ${ZLIB_INCLUDE_DIR})
 -    list(APPEND requires_private_list "zlib")
 +    #target_link_libraries( exiv2lib PRIVATE ZLIB::ZLIB)
++    #target_include_directories(exiv2lib_int PRIVATE ${ZLIB_INCLUDE_DIR})
 +    #list(APPEND requires_private_list "zlib")
  endif()
  

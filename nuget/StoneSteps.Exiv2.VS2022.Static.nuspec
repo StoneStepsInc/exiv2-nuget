@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>StoneSteps.Exiv2.VS2022.Static</id>
-    <version>0.28.3</version>
+    <version>0.28.8</version>
     <authors>Exiv2 authors</authors>
     <owners>Stone Steps (package)</owners>
     <license type="file">licenses\COPYING</license>
@@ -22,7 +22,7 @@ Package Notes:
 
 See Exiv2 release notes for version details:
 
-https://github.com/Exiv2/exiv2/releases/tag/v0.28.3
+https://github.com/Exiv2/exiv2/releases/tag/v0.28.8
     </releaseNotes>
     <copyright>Copyright (C) 2004-2024 Exiv2 authors</copyright>
     <tags>Exiv2,EXIF,native,library</tags>
@@ -33,8 +33,8 @@ https://github.com/Exiv2/exiv2/releases/tag/v0.28.3
       first revision (the 4th version component) in this case, even if
       newer revisions are available.
       -->
-      <dependency id="StoneSteps.zLib.VS2022.Static" version="[1.3.1.1]"/>
-      <dependency id="StoneSteps.Expat.VS2022.Static" version="[2.6.3.1]"/>
+      <dependency id="StoneSteps.zLib.VS2022.Static" version="[1.3.2.1]"/>
+      <dependency id="StoneSteps.Expat.VS2022.Static" version="[2.8.1.1]"/>
     </dependencies>
   </metadata>
   <files>

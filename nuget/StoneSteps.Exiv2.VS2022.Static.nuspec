@@ -36,9 +36,11 @@ https://github.com/Exiv2/exiv2/releases/tag/v0.28.8
       <dependency id="StoneSteps.zLib.VS2022.Static" version="[1.3.2.1]"/>
       <dependency id="StoneSteps.Expat.VS2022.Static" version="[2.8.1.1]"/>
     </dependencies>
+    <readme>README.md</readme>
   </metadata>
   <files>
    <file src="README.txt" target=""/>
+   <file src="README.md" target=""/>
    <file src="licenses\COPYING" target="licenses\COPYING"/>
    <file src="build\**\*" target="build"/>
   </files>

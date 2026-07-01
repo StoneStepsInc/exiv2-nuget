@@ -12,6 +12,9 @@
 /nuget/build/native/lib/
 /nuget/licenses/
 
+# copy of README.txt
+/nuget/README.md
+
 # locally-built Nuget package
 /StoneSteps.exiv2.VS2022.Static.*.nupkg
 

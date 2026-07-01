@@ -101,6 +101,9 @@ rem
 mkdir ..\nuget\licenses
 copy COPYING ..\nuget\licenses\
 
+rem copy the dummy README file because Nuget cannot figure out how to manage README files
+copy ..\nuget\README.txt ..\nuget\README.md
+
 rem
 rem exiv2lib_int.lib and exiv2-xmp.lib are built in such a way that
 rem all of their object files are included into exiv2.lib, so there

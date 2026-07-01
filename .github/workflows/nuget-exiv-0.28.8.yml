@@ -160,6 +160,8 @@ jobs:
         mkdir ..\nuget\licenses
         copy COPYING ..\nuget\licenses\
 
+        copy ..\nuget\README.txt ..\nuget\README.md
+
         mkdir ..\nuget\build\native\lib\x64\Debug
         xcopy /Y build\lib\Debug\* ..\nuget\build\native\lib\x64\Debug\
         xcopy /Y build\src\exiv2lib_int.dir\Debug\exiv2lib_int.pdb ..\nuget\build\native\lib\x64\Debug\

@@ -88,7 +88,7 @@ jobs:
         git config --global core.autocrlf false
 
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
     - name: Download Exiv2
       run: curl --location --output ${{ env.EXIV2_FNAME }} https://github.com/Exiv2/exiv2/archive/refs/tags/v${{ env.PKG_VER }}.tar.gz
@@ -183,7 +183,7 @@ jobs:
 
     - name: Upload CI Nuget package
       if: ${{ github.event.inputs.publish-package != 'yes' }}
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: Exiv2 CI Nuget package
         path: StoneSteps.Exiv2.VS2022.Static.${{ env.PKG_VER }}.${{ env.PKG_REV }}-ci.${{ env.BUILD_NUMBER }}.nupkg

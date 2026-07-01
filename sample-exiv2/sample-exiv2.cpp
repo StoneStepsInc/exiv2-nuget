@@ -6,12 +6,54 @@
 #include <string>
 #include <format>    // C++20 (std::format)
 #include <filesystem>
+#include <memory>
 
 #include <locale>
 #include <clocale>
 
 using namespace std::literals::string_literals;
 using namespace std::literals::string_view_literals;
+
+char *url_decode(const char *str, char *buf, size_t outsz)
+{
+   const unsigned char *in = reinterpret_cast<const unsigned char*>(str);
+   unsigned char *out = reinterpret_cast<unsigned char*>(buf);
+
+   while (*in) {
+      // account for the null terminator set after this loop
+      if(outsz == 1) {
+         outsz = 0;
+         break;
+      }
+
+      if(*in == '%' && *(in+1) == '%') {
+         *out++ = '%';
+         in += 2;
+      }
+      else if(*in == '%') {
+         if(!std::isxdigit(*(in+1)) || !std::isxdigit(*(in+2)))
+            throw std::runtime_error("Bad URL encoding");
+
+         unsigned int hi = std::isdigit(*(in+1)) ? *(in+1) - '0' : (std::toupper(*(in+1)) - 'A' + 10);
+         unsigned int lo = std::isdigit(*(in+2)) ? *(in+2) - '0' : (std::toupper(*(in+2)) - 'A' + 10);
+
+         *out++ = static_cast<char>((hi << 4) | lo);
+         in += 3;
+      }
+      else {
+         *out++ = *in++;
+      }
+
+      outsz--;
+   }
+
+   if(!outsz)
+      throw std::runtime_error("URL decoding buffer is too small");
+
+   *out = '\x0';
+
+   return buf;
+}
 
 static void printEXIF(const Exiv2::Image::UniquePtr& image)
 {
@@ -197,46 +239,53 @@ static void printXMP(const Exiv2::Image::UniquePtr& image)
 
 int main(int argc, const char* argv[])
 {
-   if(argc != 2) {
-      fprintf(stderr, "Usage: sample-exiv2 image-path\n");
+   if(argc < 2) {
+      fprintf(stderr, "Usage: sample-exiv2 [-|image-path] [url-encoded-utf-8-image-path]\n");
       return EXIT_FAILURE;
    }
 
    //
-   // This will work for UTF-8 strings received via other means, but
-   // not from the command line - there's no way to pass emojis into
-   // the narrow character `main`, but once the string is in the app
-   // at run time, it will go through exiv2 and CRT as a UTF-8 string.
+   // The narrow character `main` function on Windows can only receive
+   // characters in the system encoding, such as code pages 437 and 1252,
+   // so there's no way to pass in characters that are not in the active
+   // code page into this app. In order to test UTF-8 file names, the
+   // second argument may be used to pass in any characters by applying
+   // URL encoding.
    // 
-   // Uncomment the locale calls below to test a hardcoded file name
-   // like these in the `open` call below.
+   // For example, 
    // 
-   // emoji: "hello-\xF0\x9F\x8C\x8E.jpg"
-   // Kanji: "hello-\xE4\xB8\x96\xE7\x95\x8C.jpg"
+   // YEN   (2 bytes): hello-%C2%A5.jpg
+   // Kanji (3 bytes): hello-%E4%B8%96%E7%95%8C.jpg
+   // emoji (4 bytes): hello-%F0%9F%8C%8E.jpg
    // 
-   //std::locale::global(std::locale("en_US.UTF-8"));
-   //std::setlocale(LC_CTYPE, "en_US.UTF-8");
-   // 
-   // Either of these forms will work for 2-byte UTF-8 characters that
-   // are represented in the Win-1252 code page, such as the YEN character,
-   // and will work for command-line arguments (same as default for Western
-   // setups).
-   // 
-   //std::locale::global(std::locale("en_US"));
-   //std::setlocale(LC_CTYPE, "en_US");
-   // 
-   //std::locale::global(std::locale(".1252"));
-   //std::setlocale(LC_CTYPE, ".1252");
-   //
 
    try {
       Exiv2::XmpParser::initialize();
       Exiv2::enableBMFF();
 
-      Exiv2::Image::UniquePtr image = Exiv2::ImageFactory::open(std::filesystem::path(argv[1]));
+      std::filesystem::path image_path;
+      
+      if(argc == 2)
+         image_path = argv[1];
+      else {
+         // the resulting string will be the same length or shorter as the input string
+         size_t url_path_sz = strlen(argv[2])+1;
+         std::unique_ptr<char[]> url_path(new char[url_path_sz]);
+
+         // convert the URL-encoded UTF-8 characters into byte sequences
+         image_path = reinterpret_cast<const char8_t*>(url_decode(argv[2], url_path.get(), url_path_sz));
+      }
+
+      Exiv2::Image::UniquePtr image = Exiv2::ImageFactory::open(image_path);
 
       if(!image)
          throw std::runtime_error(std::format("Cannot open file {:s}"sv, argv[1]));
+
+      // interpret the file name as either code page characters or as UTF-8 characters based on which argument we are processing
+      if(argc == 2)
+         printf("File: %s\n\n", image_path.string().c_str());
+      else
+         printf("File: %s\n\n", reinterpret_cast<const char*>(image_path.u8string().c_str()));
 
       image->readMetadata();
 
